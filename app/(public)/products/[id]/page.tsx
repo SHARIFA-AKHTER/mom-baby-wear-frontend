@@ -1,49 +1,55 @@
-/* eslint-disable @next/next/no-img-element */
-"use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { notFound } from "next/navigation";
 
-import { useParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import axiosInstance from "@/app/utils/axiosInstance";
-
-interface Product {
+type Product = {
   id: string;
-  title: string;
-  description?: string;
+  name: string;
   price: number;
-  images: string[];
-}
+  image: string;
+  description: string;
+};
 
-export default function ProductPage() {
-  const params = useParams();
-  const productId = params.id;
-
-  const { data, isLoading } = useQuery<Product>({
-    queryKey: ["product", productId],
-    queryFn: async () => {
-      const res = await axiosInstance.get(`/product/${productId}`);
-      return res.data.data;
-    },
-    enabled: !!productId,
+async function getProduct(id: string): Promise<Product> {
+  const res = await fetch(`http://localhost:5000/api/products/${id}`, {
+    cache: "no-store",
   });
 
-  if (isLoading) return <div className="text-center py-20">Loading...</div>;
-  if (!data) return <div className="text-center py-20">Product not found</div>;
+  if (!res.ok) {
+    notFound();
+  }
+
+  return res.json();
+}
+
+export default async function ProductDetailsPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const product = await getProduct(params.id);
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10 grid md:grid-cols-2 gap-8">
-      <img
-        src={data.images[0] || "/placeholder.png"}
-        alt={data.title}
-        className="rounded-lg w-full h-96 object-cover"
-      />
-      <div>
-        <h1 className="text-3xl font-bold mb-4">{data.title}</h1>
-        <p className="text-pink-600 text-xl font-bold mb-4">${data.price.toFixed(2)}</p>
-        <p className="mb-6">{data.description}</p>
-        <Button>Add to Cart</Button>
+    <section className="container mx-auto px-4 py-10">
+      <div className="grid md:grid-cols-2 gap-8">
+        <img
+          src={product.image}
+          alt={product.name}
+          className="rounded-lg"
+        />
+
+        <div>
+          <h1 className="text-3xl font-bold">{product.name}</h1>
+          <p className="text-xl text-primary font-semibold mt-2">
+            ৳ {product.price}
+          </p>
+
+          <p className="mt-4 text-gray-600">{product.description}</p>
+
+          <button className="mt-6 px-6 py-2 bg-primary text-white rounded-lg">
+            Add to Cart
+          </button>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

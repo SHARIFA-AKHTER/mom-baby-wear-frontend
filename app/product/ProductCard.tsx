@@ -1,31 +1,66 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-interface ProductCardProps {
+export interface Product {
   id: string;
   title: string;
+  description?: string | null;
   price: number;
+  stock: number;
   images: string[];
 }
 
-export default function ProductCard({ id, title, price, images }: ProductCardProps) {
+interface Props {
+  product: Product;
+}
+
+export default function ProductCard({ product }: Props) {
+  const image =
+    product.images?.length > 0
+      ? product.images[0]
+      : "/placeholder-product.png";
+
   return (
-    <div className="border rounded-lg shadow hover:shadow-lg transition p-4 flex flex-col">
-      <Link href={`/products/${id}`}>
-        <img
-          src={images[0] || "/placeholder.png"}
-          alt={title}
-          className="h-48 w-full object-cover rounded-md mb-4"
+    <div className="group rounded-xl border bg-white shadow-sm hover:shadow-md transition overflow-hidden flex flex-col">
+      {/* Image */}
+      <Link href={`/products/${product.id}`} className="relative w-full aspect-square">
+        <Image
+          src={image}
+          alt={product.title}
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-300"
+          sizes="(max-width: 640px) 100vw,
+                 (max-width: 1024px) 50vw,
+                 33vw"
         />
       </Link>
-      <h3 className="text-lg font-semibold mb-2">{title}</h3>
-      <p className="text-pink-600 font-bold mb-4">${price.toFixed(2)}</p>
-      <Link href={`/products/${id}`}>
-        <Button className="w-full">View Details</Button>
-      </Link>
+
+      {/* Content */}
+      <div className="flex flex-col flex-1 p-4">
+        <h3 className="font-semibold text-gray-900 line-clamp-1">
+          {product.title}
+        </h3>
+
+        <p className="text-sm text-gray-500 line-clamp-2 mt-1">
+          {product.description || "No description available"}
+        </p>
+
+        <div className="mt-auto pt-4 flex items-center justify-between">
+          <span className="text-lg font-bold text-pink-600">
+            ৳ {product.price.toLocaleString()}
+          </span>
+
+          <Button
+            size="sm"
+            disabled={product.stock === 0}
+          >
+            {product.stock === 0 ? "Out of Stock" : "View"}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }

@@ -12,6 +12,7 @@ export const useAuth = () => {
       const res = await axiosInstance.get("/auth/me");
       return res.data.data;
     },
+    enabled: false,
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
     retry: false,

@@ -1,39 +1,55 @@
-"use client";
+/* eslint-disable @next/next/no-img-element */
 
-import ProductCard from "@/app/product/ProductCard";
-import axiosInstance from "@/app/utils/axiosInstance";
-import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 
-import { useParams } from "next/navigation";
-
-interface Product {
+type Product = {
   id: string;
-  title: string;
+  name: string;
   price: number;
-  images: string[];
+  image: string;
+};
+
+async function getCategoryProducts(id: string): Promise<Product[]> {
+  const res = await fetch(
+    `http://localhost:5000/api/category/${id}/product`,
+    { cache: "no-store" }
+  );
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch category products");
+  }
+
+  return res.json();
 }
 
-export default function CategoryPage() {
-  const params = useParams();
-  const slug = params.slug;
-
-  const { data, isLoading } = useQuery<Product[]>({
-    queryKey: ["category", slug],
-    queryFn: async () => {
-      const res = await axiosInstance.get(`/categories/${slug}`);
-      return res.data.data.products;
-    },
-    enabled: !!slug,
-  });
-
-  if (isLoading) return <div className="text-center py-20">Loading...</div>;
-  if (!data || data.length === 0) return <div className="text-center py-20">No products found</div>;
+export default async function CategoryPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const products = await getCategoryProducts(params.id);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10 grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-      {data.map((product) => (
-        <ProductCard key={product.id} {...product} />
-      ))}
-    </div>
+    <section className="container mx-auto px-4 py-10">
+      <h1 className="text-2xl font-bold mb-6">Category Products</h1>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {products.map((product) => (
+          <Link
+            key={product.id}
+            href={`/products/${product.id}`}
+            className="border rounded-lg p-4 hover:shadow"
+          >
+            <img
+              src={product.image}
+              alt={product.name}
+              className="h-40 w-full object-cover rounded"
+            />
+            <h3 className="mt-2 font-semibold">{product.name}</h3>
+            <p className="text-primary">৳ {product.price}</p>
+          </Link>
+        ))}
+      </div>
+    </section>
   );
 }

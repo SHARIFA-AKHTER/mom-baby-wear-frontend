@@ -90,7 +90,7 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data: LoginInput) => {
-    console.log("Login data:", data);
+     console.log("submit data", data);
     try {
       await AuthService.login(data);
       router.replace("/");

@@ -15,9 +15,6 @@ export const AuthService = {
     const res = await axiosInstance.post("/auth/register", data);
     return res.data;
   },
-   me: async () => {
-    const res = await axiosInstance.get("/auth/me", { withCredentials: true });
-    return res.data.data;
-  },
+  
 };
 
