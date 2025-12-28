@@ -4,7 +4,7 @@ import axiosInstance from "../utils/axiosInstance";
 export const AuthService = {
   login: async (data: { email: string; password: string }) => {
     const res = await axiosInstance.post("/auth/login", data);
-    return res.data;
+    return res.data.data;
   },
 
   register: async (data: {
@@ -13,7 +13,7 @@ export const AuthService = {
     password: string;
   }) => {
     const res = await axiosInstance.post("/auth/register", data);
-    return res.data;
+    return res.data.data;
   },
   
 };
