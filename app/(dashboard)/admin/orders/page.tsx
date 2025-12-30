@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -16,7 +17,6 @@ interface Order {
   };
 }
 
-// স্ট্যাটাস অনুযায়ী কালার কোড
 const statusStyles: Record<OrderStatus, string> = {
   PENDING: "bg-amber-100 text-amber-700 border-amber-200",
   PROCESSING: "bg-blue-100 text-blue-700 border-blue-200",
