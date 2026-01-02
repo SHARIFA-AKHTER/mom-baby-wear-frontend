@@ -1,20 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-// import React from "react";
-
-// export default function AdminDashboard() {
-//   return (
-//     <div>
-//       <h1 className="text-3xl font-bold mb-4">Welcome to Admin Dashboard</h1>
-//       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-//         <div className="bg-white p-4 rounded shadow">Total Products: 120</div>
-//         <div className="bg-white p-4 rounded shadow">Total Orders: 45</div>
-//         <div className="bg-white p-4 rounded shadow">Total Users: 78</div>
-//         <div className="bg-white p-4 rounded shadow">Active Coupons: 12</div>
-//       </div>
-//     </div>
-//   );
-// }
-
 
 import React from "react";
 import Link from "next/link";
@@ -85,7 +69,7 @@ export default function AdminDashboard() {
           </div>
           <div className="flex items-center gap-4">
             <div className="text-right">
-              <p className="text-sm font-bold text-gray-800">Emma Kwan</p>
+              <p className="text-sm font-bold text-gray-800">Sharifa</p>
               <p className="text-[10px] text-gray-400">Admin</p>
             </div>
             <div className="w-10 h-10 rounded-full bg-gray-200 border-2 border-white shadow-sm overflow-hidden">
@@ -100,7 +84,8 @@ export default function AdminDashboard() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {stats.map((stat, index) => (
-              <div key={index} className="bg-white p-6 rounded-[24px] shadow-sm flex items-center gap-4 border border-transparent hover:border-purple-200 transition-all cursor-default">
+              <div key={index} className="bg-white p-6 rounded-[24px] shadow-sm flex items-center gap-4 border border-transparent
+               hover:border-purple-200 transition-all cursor-default">
                 <div className={`w-12 h-12 ${stat.color} rounded-2xl flex items-center justify-center text-xl`}>
                   {stat.icon}
                 </div>

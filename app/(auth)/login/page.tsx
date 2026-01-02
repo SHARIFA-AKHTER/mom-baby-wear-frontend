@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/immutability */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 
@@ -93,7 +95,8 @@ export default function LoginPage() {
      console.log("submit data", data);
     try {
       await AuthService.login(data);
-      router.replace("/");
+      // router.replace("/");
+      window.location.href = "/";
     } catch (error: any) {
       alert(error?.response?.data?.message || "Login failed");
     }

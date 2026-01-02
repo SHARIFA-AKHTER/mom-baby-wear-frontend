@@ -1,469 +1,201 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 "use client";
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuthContext } from "@/app/providers/AuthProvider";
+import { 
+  ChevronDown, ShoppingCart, Heart, LayoutDashboard, 
+  LogOut, Package, List 
+} from "lucide-react";
+import { AuthService } from "@/app/services/auth.service";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const { data: user} = useAuthContext();
+  const [categories, setCategories] = useState([]);
+  
+  // React Query Client clear করার জন্য
+  const queryClient = useQueryClient();
+  const { data: user, isLoading } = useAuthContext();
 
-  // Nav links
-  const links = (
-    <>
-      <Link href="/products" className="hover:text-pink-600">
-        Products
-      </Link>
-      <Link href="/cart" className="hover:text-pink-600">
-        Cart
-      </Link>
-      <Link href="/wishlist" className="hover:text-pink-600">
-        Wishlist
-      </Link>
-      <Link href="/orders" className="hover:text-pink-600">
-        Orders
-      </Link>
-      <Link 
-      href="/admin/dashboard" className="hover:text-pink-600">
-        Dashboard
-        </Link>
-    </>
-  );
+  // ১. ক্যাটাগরি ফেচ করা
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+        const res = await fetch(`${API_URL}/category`);
+        const json = await res.json();
+        if (json.success) {
+          setCategories(json.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  // ২. রোল অনুযায়ী ড্যাশবোর্ড লিংক জেনারেটর
+  const getDashboardLink = () => {
+    if (!user) return "/login";
+    const role = user.role?.toUpperCase();
+    if (role === "ADMIN") return "/admin/dashboard";
+    if (role === "STAFF") return "/staff/stock";
+    return "/"; // সাধারণ ইউজারের জন্য (যেহেতু আপনার স্ট্রাকচারে /dashboard নেই)
+  };
+
+  // ৩. লগআউট হ্যান্ডেলার
+  const handleLogout = async () => {
+    try {
+      await AuthService.logout(); 
+      // মেমোরি থেকে ইউজার ডাটা ক্লিয়ার করা
+      queryClient.clear(); 
+      localStorage.clear();
+      // হার্ড রিফ্রেশ করে লগইন পেজে পাঠানো
+      window.location.href = "/login"; 
+    } catch (error) {
+      console.error("Logout failed", error);
+      window.location.href = "/login";
+    }
+  };
+
+  const navLinks = [
+    { name: "Products", href: "/products", icon: <Package size={18} /> },
+    { name: "Cart", href: "/cart", icon: <ShoppingCart size={18} /> },
+    { name: "Wishlist", href: "/wishlist", icon: <Heart size={18} /> },
+    { name: "Orders", href: "/orders", icon: <List size={18} /> },
+    { name: "Dashboard", href: "/admin/dashboard", icon: <List size={18} /> },
+  ];
 
   return (
     <header className="bg-white border-b sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-      
-        <Link href="/" className="flex items-center gap-2">
+        
+        {/* Logo Section */}
+        <Link href="/" className="flex items-center gap-2 shrink-0">
           <Image
             src="/logo.jpeg" 
             alt="Logo"
-            width={32}
-            height={32}
-            className="rounded-full"
+            width={35}
+            height={35}
+            className="rounded-full border border-pink-100"
           />
-          <span className="text-2xl font-bold text-pink-600">
+          <span className="text-xl font-bold text-pink-600 hidden sm:inline-block">
             Mom & Baby Wear
           </span>
         </Link>
 
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex gap-6 text-sm font-medium text-gray-700 items-center">
-          {links}
+        {/* Desktop Navigation */}
+        <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-gray-700">
+          
+          <div className="relative group px-2 py-4">
+            <button className="flex items-center gap-1 hover:text-pink-600 transition-colors">
+              Categories <ChevronDown size={14} className="group-hover:rotate-180 transition-transform" />
+            </button>
+            <div className="absolute top-full left-0 w-56 bg-white border border-gray-100 shadow-xl rounded-b-xl hidden group-hover:block">
+              <div className="py-2">
+                {categories.map((cat: any) => (
+                  <Link 
+                    key={cat.id} 
+                    href={`/categories/${cat.id}`}
+                    className="block px-4 py-2.5 hover:bg-pink-50 hover:text-pink-600 border-b last:border-0 border-gray-50"
+                  >
+                    {cat.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
 
-          {/* Admin / Staff Panel */}
-          {user?.role === "ADMIN" && (
-            <Link
-              href="/admin/dashboard"
-              className="bg-pink-600 text-white px-4 py-1 rounded hover:bg-pink-700"
-            >
-              Admin Panel
+          {navLinks.map((link) => (
+            <Link key={link.href} href={link.href} className="hover:text-pink-600 transition-colors">
+              {link.name}
             </Link>
-          )}
-          {user?.role === "STAFF" && (
-            <Link
-              href="/staff/stock"
-              className="bg-pink-600 text-white px-4 py-1 rounded hover:bg-pink-700"
-            >
-              Staff Panel
-            </Link>
-          )}
+          ))}
 
-          {/* Auth / Profile */}
-          {!user ? (
-            <Link href="/login">
-              <Button variant="outline">Login</Button>
-            </Link>
-          ) : (
-            <div className="flex items-center gap-2">
-              {user.profileImage && (
-                <Image
-                  src={user.profileImage}
-                  alt={user.name || "User"}
-                  width={32}
-                  height={32}
-                  className="rounded-full border"
-                />
-              )}
+          {/* Auth Conditional Rendering */}
+          {isLoading ? (
+            <div className="h-8 w-20 bg-gray-100 animate-pulse rounded-full"></div>
+          ) : user ? (
+            <div className="flex items-center gap-4">
+              <Link 
+                href={getDashboardLink()}
+                className="flex items-center gap-1.5 bg-pink-600 text-white px-4 py-2 rounded-full hover:bg-pink-700 transition-all text-xs font-bold"
+              >
+                <LayoutDashboard size={14} /> Dashboard
+              </Link>
               <Button
                 variant="ghost"
-                onClick={() => {
-                  document.cookie = "accessToken=; path=/; max-age=0";
-                  location.reload();
-                }}
+                className="text-gray-500 hover:text-red-600 hover:bg-red-50 flex items-center gap-1"
+                onClick={handleLogout}
               >
-                Logout
+                <LogOut size={16} /> Logout
               </Button>
             </div>
+          ) : (
+            <Link href="/login">
+              <Button variant="outline" className="border-pink-600 text-pink-600 hover:bg-pink-50 rounded-full px-6 h-9 font-bold">
+                Login
+              </Button>
+            </Link>
           )}
         </nav>
 
         {/* Mobile Toggle */}
-        <button
-          onClick={() => setOpen(!open)}
-          className="md:hidden text-2xl"
-        >
-          ☰
+        <button onClick={() => setOpen(!open)} className="lg:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-md">
+          {open ? <span className="text-xl">✕</span> : <span className="text-xl">☰</span>}
         </button>
       </div>
 
-      {/* Mobile Nav */}
+      {/* Mobile Menu */}
       {open && (
-        <nav className="md:hidden flex flex-col gap-4 px-4 py-4 text-sm border-t bg-white">
-          {links}
+        <div className="lg:hidden fixed inset-0 top-16 bg-white z-[60] overflow-y-auto border-t p-4 space-y-6">
+          <div className="grid grid-cols-2 gap-3">
+            {navLinks.map((link) => (
+              <Link 
+                key={link.href} 
+                href={link.href} 
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg text-sm font-medium"
+              >
+                {link.icon} {link.name}
+              </Link>
+            ))}
+          </div>
 
-          {user?.role === "ADMIN" && (
-            <Link href="/admin/dashboard" className="text-pink-600 font-medium">
-              Admin Panel
-            </Link>
-          )}
-          {user?.role === "STAFF" && (
-            <Link href="/staff/stock" className="text-pink-600 font-medium">
-              Staff Panel
-            </Link>
-          )}
-
-          {!user ? (
-            <Link href="/login" className="text-pink-600 font-semibold">
-              Login
-            </Link>
-          ) : (
-            <button
-              onClick={() => {
-                document.cookie = "accessToken=; path=/; max-age=0";
-                location.reload();
-              }}
-              className="text-pink-600 font-semibold text-left"
-            >
-              Logout
-            </button>
-          )}
-        </nav>
+          <div className="pt-4 border-t">
+            {user ? (
+              <div className="space-y-3">
+                <Link 
+                  href={getDashboardLink()}
+                  onClick={() => setOpen(false)}
+                  className="flex items-center justify-center gap-2 bg-pink-600 text-white w-full py-3 rounded-xl font-bold"
+                >
+                  <LayoutDashboard size={18} /> Go to Dashboard
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center justify-center gap-2 w-full py-3 text-red-500 font-bold border border-red-100 rounded-xl bg-red-50/50"
+                >
+                  <LogOut size={18} /> Sign Out
+                </button>
+              </div>
+            ) : (
+              <Link 
+                href="/login" 
+                onClick={() => setOpen(false)}
+                className="block w-full text-center bg-pink-600 text-white py-4 rounded-xl font-bold"
+              >
+                Login to Account
+              </Link>
+            )}
+          </div>
+        </div>
       )}
     </header>
   );
 }
-
-
-// "use client";
-
-// import Link from "next/link";
-// import Image from "next/image";
-// import { useState } from "react";
-
-// import { Button } from "@/components/ui/button";
-// import { useAuthContext } from "@/app/providers/AuthProvider";
-
-// export default function Navbar() {
-//   const [open, setOpen] = useState(false);
-//   const { data: user } = useAuthContext();
-
-//   // Nav links (Orders সরিয়ে দেওয়া হয়েছে)
-//   const links = (
-//     <>
-//       <Link href="/products" className="hover:text-pink-600 transition">
-//         Products
-//       </Link>
-//       <Link href="/cart" className="hover:text-pink-600 transition">
-//         Cart
-//       </Link>
-//       <Link href="/wishlist" className="hover:text-pink-600 transition">
-//         Wishlist
-//       </Link>
-//     </>
-//   );
-
-//   return (
-//     <header className="bg-white border-b sticky top-0 z-50 shadow-sm">
-//       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-        
-//         {/* Logo Section */}
-//         <Link href="/" className="flex items-center gap-2">
-//           <Image
-//             src="/logo.jpeg" 
-//             alt="Logo"
-//             width={32}
-//             height={32}
-//             className="rounded-full"
-//           />
-//           <span className="text-2xl font-bold text-pink-600">
-//             Mom & Baby Wear
-//           </span>
-//         </Link>
-
-//         {/* Desktop Nav */}
-//         <nav className="hidden md:flex gap-6 text-sm font-medium text-gray-700 items-center">
-//           {links}
-
-//           {/* Admin / Staff Panel (Role based conditional links) */}
-//           {user?.role === "ADMIN" && (
-//             <Link
-//               href="/admin/dashboard"
-//               className="bg-pink-600 text-white px-4 py-1.5 rounded-lg hover:bg-pink-700 transition"
-//             >
-//               Admin Panel
-//             </Link>
-//           )}
-          
-//           {user?.role === "STAFF" && (
-//             <Link
-//               href="/staff/stock"
-//               className="bg-pink-600 text-white px-4 py-1.5 rounded-lg hover:bg-pink-700 transition"
-//             >
-//               Staff Panel
-//             </Link>
-//           )}
-
-//           {/* Auth / Profile Section */}
-//           {!user ? (
-//             <Link href="/login">
-//               <Button variant="outline" className="rounded-xl border-pink-200 text-pink-600 hover:bg-pink-50">
-//                 Login
-//               </Button>
-//             </Link>
-//           ) : (
-//             <div className="flex items-center gap-3 ml-2 border-l pl-4">
-//               {user.profileImage && (
-//                 <Image
-//                   src={user.profileImage}
-//                   alt={user.name || "User"}
-//                   width={32}
-//                   height={32}
-//                   className="rounded-full border border-pink-100"
-//                 />
-//               )}
-//               <Button
-//                 variant="ghost"
-//                 className="text-gray-600 hover:text-red-500 hover:bg-red-50 transition"
-//                 onClick={() => {
-//                   document.cookie = "accessToken=; path=/; max-age=0";
-//                   location.reload();
-//                 }}
-//               >
-//                 Logout
-//               </Button>
-//             </div>
-//           )}
-//         </nav>
-
-//         {/* Mobile Toggle Button */}
-//         <button
-//           onClick={() => setOpen(!open)}
-//           className="md:hidden text-2xl text-gray-600"
-//         >
-//           {open ? "✕" : "☰"}
-//         </button>
-//       </div>
-
-//       {/* Mobile Nav Menu */}
-//       {open && (
-//         <nav className="md:hidden flex flex-col gap-4 px-4 py-6 text-base border-t bg-white animate-in slide-in-from-top duration-300">
-//           {links}
-
-//           <hr className="border-gray-100" />
-
-//           {user?.role === "ADMIN" && (
-//             <Link href="/admin/dashboard" className="text-pink-600 font-bold">
-//               Admin Panel
-//             </Link>
-//           )}
-//           {user?.role === "STAFF" && (
-//             <Link href="/staff/stock" className="text-pink-600 font-bold">
-//               Staff Panel
-//             </Link>
-//           )}
-
-//           {!user ? (
-//             <Link href="/login" className="text-pink-600 font-bold">
-//               Login
-//             </Link>
-//           ) : (
-//             <button
-//               onClick={() => {
-//                 document.cookie = "accessToken=; path=/; max-age=0";
-//                 location.reload();
-//               }}
-//               className="text-red-500 font-bold text-left"
-//             >
-//               Logout
-//             </button>
-//           )}
-//         </nav>
-//       )}
-//     </header>
-//   );
-// }
-
-// "use client";
-
-// import Link from "next/link";
-// import Image from "next/image";
-// import { useState } from "react";
-// import { Menu, X } from "lucide-react";
-
-// import { Button } from "@/components/ui/button";
-// import { useAuthContext } from "@/app/providers/AuthProvider";
-
-// type Role = "ADMIN" | "STAFF" | "CUSTOMER" | "GUEST";
-
-// export default function Navbar() {
-//   const [open, setOpen] = useState(false);
-//   const { data: user } = useAuthContext();
-
-//   const role: Role = user?.role ?? "GUEST";
-
-//   const linksByRole: Record<Role, { label: string; href: string }[]> = {
-//     GUEST: [
-//       { label: "Products", href: "/products" },
-//       { label: "Categories", href: "/categories" },
-//     ],
-//     CUSTOMER: [
-//       { label: "Products", href: "/products" },
-//       { label: "Categories", href: "/categories" },
-//       { label: "Cart", href: "/cart" },
-//       { label: "Wishlist", href: "/wishlist" },
-//       { label: "My Orders", href: "/orders" },
-//     ],
-//     ADMIN: [],
-//     STAFF: [],
-//   };
-
-//   const navLinks = linksByRole[role] ?? [];
-
-//   const logout = () => {
-//     document.cookie = "accessToken=; path=/; max-age=0";
-//     location.reload();
-//   };
-
-//   return (
-//     <header className="sticky top-0 z-50 bg-white border-b shadow-sm">
-//       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-
-//         {/* Logo */}
-//         <Link href="/" className="flex items-center gap-2">
-//           <Image
-//             src="/logo.jpeg"
-//             alt="Mom & Baby Wear"
-//             width={36}
-//             height={36}
-//             className="rounded-full"
-//           />
-//           <span className="text-lg sm:text-xl font-bold text-pink-600">
-//             Mom & Baby Wear
-//           </span>
-//         </Link>
-
-//         {/* Desktop Nav */}
-//         <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-700">
-//           {navLinks.map((link) => (
-//             <Link
-//               key={link.href}
-//               href={link.href}
-//               className="hover:text-pink-600 transition"
-//             >
-//               {link.label}
-//             </Link>
-//           ))}
-
-//           {role === "ADMIN" && (
-//             <Link
-//               href="/admin/dashboard"
-//               className="px-3 py-1 rounded bg-pink-600 text-white hover:bg-pink-700"
-//             >
-//               Admin Panel
-//             </Link>
-//           )}
-
-//           {role === "STAFF" && (
-//             <Link
-//               href="/staff/orders"
-//               className="px-3 py-1 rounded bg-pink-600 text-white hover:bg-pink-700"
-//             >
-//               Staff Panel
-//             </Link>
-//           )}
-
-//           {!user ? (
-//             <Link href="/login">
-//               <Button variant="outline">Login</Button>
-//             </Link>
-//           ) : (
-//             <div className="flex items-center gap-3">
-//               {user.profileImage && (
-//                 <Image
-//                   src={user.profileImage}
-//                   alt={user.name || "User"}
-//                   width={32}
-//                   height={32}
-//                   className="rounded-full border"
-//                 />
-//               )}
-//               <Button variant="ghost" onClick={logout}>
-//                 Logout
-//               </Button>
-//             </div>
-//           )}
-//         </nav>
-
-//         {/* Mobile Toggle */}
-//         <button
-//           className="md:hidden"
-//           onClick={() => setOpen(!open)}
-//         >
-//           {open ? <X size={26} /> : <Menu size={26} />}
-//         </button>
-//       </div>
-
-//       {/* Mobile Menu */}
-//       {open && (
-//         <div className="md:hidden border-t bg-white px-4 py-4 space-y-4 text-sm">
-//           {navLinks.map((link) => (
-//             <Link
-//               key={link.href}
-//               href={link.href}
-//               onClick={() => setOpen(false)}
-//               className="block font-medium text-gray-700 hover:text-pink-600"
-//             >
-//               {link.label}
-//             </Link>
-//           ))}
-
-//           {role === "ADMIN" && (
-//             <Link
-//               href="/admin/dashboard"
-//               className="block font-semibold text-pink-600"
-//             >
-//               Admin Panel
-//             </Link>
-//           )}
-
-//           {role === "STAFF" && (
-//             <Link
-//               href="/staff/orders"
-//               className="block font-semibold text-pink-600"
-//             >
-//               Staff Panel
-//             </Link>
-//           )}
-
-//           {!user ? (
-//             <Link href="/login" className="block font-semibold text-pink-600">
-//               Login
-//             </Link>
-//           ) : (
-//             <button
-//               onClick={logout}
-//               className="block font-semibold text-pink-600 text-left"
-//             >
-//               Logout
-//             </button>
-//           )}
-//         </div>
-//       )}
-//     </header>
-//   );
-// }
