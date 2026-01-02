@@ -72,8 +72,12 @@ export default function WishlistPage() {
 
               {/* Product Details */}
               <div className="p-5">
+                
                 <h3 className="font-bold text-gray-800 text-lg truncate mb-1">
                   {product.name}
+                </h3>
+                <h3 className="font-bold text-gray-800 text-lg truncate mb-1">
+                  {product.title} 
                 </h3>
                 <p className="text-pink-600 font-extrabold text-xl">
                   ৳{product.price}

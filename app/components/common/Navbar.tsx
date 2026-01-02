@@ -153,7 +153,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {open && (
-        <div className="lg:hidden fixed inset-0 top-16 bg-white z-[60] overflow-y-auto border-t p-4 space-y-6">
+        <div className="lg:hidden fixed inset-0 top-16 bg-white z-60 overflow-y-auto border-t p-4 space-y-6">
           <div className="grid grid-cols-2 gap-3">
             {navLinks.map((link) => (
               <Link 
