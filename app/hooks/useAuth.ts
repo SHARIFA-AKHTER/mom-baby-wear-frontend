@@ -17,7 +17,7 @@ export const useAuth = () => {
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
     retry: false,
-    enabled: true,
+    enabled: false,
   });
 };
 

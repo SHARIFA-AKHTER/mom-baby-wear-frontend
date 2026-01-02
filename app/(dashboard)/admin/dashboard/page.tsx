@@ -34,6 +34,7 @@ export default function AdminDashboard() {
             { name: "Orders", icon: "🛒", href: "/admin/orders" },
             { name: "Users", icon: "👥", href: "/admin/users" },
             { name: "Coupons", icon: "🎟️", href: "/admin/coupons" },
+            { name: "Reviews", icon: "🎟️", href: "/admin/reviews" },
           ].map((item) => (
             <Link
               key={item.name}

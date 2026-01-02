@@ -24,6 +24,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <Link href="/admin/coupons" className="block px-4 py-2 rounded hover:bg-gray-200">
             Coupons
           </Link>
+        
+          <Link href="/admin/reviews" className="block px-4 py-2 rounded hover:bg-gray-200">
+           Reviews
+          </Link>
 
           <div className="mt-6 font-semibold text-gray-500">Staff</div>
           <Link href="/staff/stock" className="block px-4 py-2 rounded hover:bg-gray-200">

@@ -1,54 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-
-// "use client";
-
-// import Image from "next/image";
-// import { ProductService } from "@/app/services/product.service";
-
-// export default async function ProductDetail({
-//   params,
-// }: {
-//   params: { id: string };
-// }) {
-//   const product = await ProductService.getById(params.id);
-
-
-//   return (
-//     <section className="container mx-auto px-4 py-6 md:py-10">
-//       <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
-//         {/* Image */}
-//         <div className="relative w-full aspect-square rounded-xl overflow-hidden border">
-//           <Image
-//             src={product.image}
-//             alt={product.title}
-//             fill
-//             className="object-cover rounded-xl"
-//           />
-//         </div>
-
-//         {/* Info */}
-//         <div>
-//           <h1 className="text-xl md:text-3xl font-bold">{product.title}</h1>
-
-//           <p className="text-pink-600 text-lg md:text-2xl font-semibold mt-2">
-//             ৳ {product.price.toLocaleString()}
-//           </p>
-
-//           <p className="text-gray-600 mt-4 text-sm md:text-base">
-//             {product.description || "No description available"}
-//           </p>
-
-//           <button className="mt-6 w-full md:w-auto px-6 py-3 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition">
-//             Add to Cart
-//           </button>
-//         </div>
-//       </div>
-//     </section>
-//   );
-// }
-
-
 "use client";
 
 import { useState, useEffect } from "react"; 
@@ -56,6 +7,7 @@ import Image from "next/image";
 import { ProductService } from "@/app/services/product.service";
 
 import { useRouter } from "next/navigation";
+import ProductReviews from "@/app/components/common/ProductReviews";
 
 export default function ProductDetail({
   params,
@@ -156,6 +108,9 @@ export default function ProductDetail({
      </button>
         </div>
       </div>
+      <div className="mt-10">
+       <ProductReviews productId={productId} />
+    </div>
     </section>
   );
 }
