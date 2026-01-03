@@ -13,24 +13,43 @@ import { LoginInput, loginSchema } from "@/app/schemas/auth.schema";
 import { AuthService } from "@/app/services/auth.service";
 import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function LoginPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
+
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (data: LoginInput) => {
-    try {
-      await AuthService.login(data);
-      toast.success("Welcome back!");
-      router.replace("/");
-      setTimeout(() => router.refresh(), 100); 
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Login failed");
-    }
-  };
+  // const onSubmit = async (data: LoginInput) => {
+  //   try {
+  //     await AuthService.login(data);
+  //     toast.success("Welcome back!");
+      
+  //     await queryClient.invalidateQueries({ queryKey: ["me"] });
+  //     router.replace("/");
+  //     setTimeout(() => router.refresh(), 100); 
+  //   } catch (error: any) {
+  //     toast.error(error?.response?.data?.message || "Login failed");
+  //   }
+  // };
 
+  const onSubmit = async (data: { email: string; password: string; }) => {
+  try {
+    const result = await AuthService.login(data);
+    if (result) {
+       
+        queryClient.invalidateQueries({ queryKey: ["me"] });
+        
+        router.push("/");
+        router.refresh();
+      }
+    } catch (error) {
+      console.error("Login Error", error);
+    }
+};
   return (
     <div className="min-h-screen w-full flex flex-col lg:flex-row bg-gray-50">
       

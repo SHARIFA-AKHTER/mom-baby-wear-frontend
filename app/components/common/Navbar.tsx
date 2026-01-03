@@ -1,37 +1,41 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 "use client";
 
-import Link from "next/link";
+import LinkNext from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuthContext } from "@/app/providers/AuthProvider";
-import { 
-  ChevronDown, ShoppingCart, Heart, LayoutDashboard, 
-  LogOut, Package, List 
+import {
+  ChevronDown,
+  ShoppingCart,
+  Heart,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  X,
+  User as UserIcon,
 } from "lucide-react";
 import { AuthService } from "@/app/services/auth.service";
 import { useQueryClient } from "@tanstack/react-query";
+import Cookies from "js-cookie";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [categories, setCategories] = useState([]);
-  
-  // React Query Client clear করার জন্য
+
   const queryClient = useQueryClient();
   const { data: user, isLoading } = useAuthContext();
 
-  // ১. ক্যাটাগরি ফেচ করা
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
         const res = await fetch(`${API_URL}/category`);
         const json = await res.json();
-        if (json.success) {
-          setCategories(json.data);
-        }
+        if (json.success) setCategories(json.data);
       } catch (error) {
         console.error("Failed to fetch categories:", error);
       }
@@ -39,159 +43,203 @@ export default function Navbar() {
     fetchCategories();
   }, []);
 
-  // ২. রোল অনুযায়ী ড্যাশবোর্ড লিংক জেনারেটর
   const getDashboardLink = () => {
     if (!user) return "/login";
-    const role = user.role?.toUpperCase();
-    if (role === "ADMIN") return "/admin/dashboard";
-    if (role === "STAFF") return "/staff/stock";
-    return "/"; // সাধারণ ইউজারের জন্য (যেহেতু আপনার স্ট্রাকচারে /dashboard নেই)
+    const role = user.role;
+
+    if (role === "ADMIN" || role === "MANAGER") return "/admin/dashboard";
+    if (role === "STAFF") return "/staff/dashboard";
+
+    return "/profile";
   };
 
-  // ৩. লগআউট হ্যান্ডেলার
+  const isAdmin = user?.role === "ADMIN" || user?.role === "MANAGER";
+
   const handleLogout = async () => {
     try {
-      await AuthService.logout(); 
-      // মেমোরি থেকে ইউজার ডাটা ক্লিয়ার করা
-      queryClient.clear(); 
+      await AuthService.logout();
+      queryClient.clear();
+      Cookies.remove("accessToken");
       localStorage.clear();
-      // হার্ড রিফ্রেশ করে লগইন পেজে পাঠানো
-      window.location.href = "/login"; 
+      window.location.href = "/login";
     } catch (error) {
-      console.error("Logout failed", error);
+      console.error("Logout failed:", error);
       window.location.href = "/login";
     }
   };
 
-  const navLinks = [
-    { name: "Products", href: "/products", icon: <Package size={18} /> },
-    { name: "Cart", href: "/cart", icon: <ShoppingCart size={18} /> },
-    { name: "Wishlist", href: "/wishlist", icon: <Heart size={18} /> },
-    { name: "Orders", href: "/orders", icon: <List size={18} /> },
-    { name: "Dashboard", href: "/admin/dashboard", icon: <List size={18} /> },
-  ];
-
   return (
     <header className="bg-white border-b sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-        
         {/* Logo Section */}
-        <Link href="/" className="flex items-center gap-2 shrink-0">
+        <LinkNext href="/" className="flex items-center gap-2 shrink-0">
           <Image
-            src="/logo.jpeg" 
+            src="/logo.jpeg"
             alt="Logo"
             width={35}
             height={35}
-            className="rounded-full border border-pink-100"
+            className="rounded-full object-cover border border-pink-100"
           />
-          <span className="text-xl font-bold text-pink-600 hidden sm:inline-block">
+          <span className="text-lg font-bold text-pink-600 hidden md:block">
             Mom & Baby Wear
           </span>
-        </Link>
+        </LinkNext>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-gray-700">
-          
-          <div className="relative group px-2 py-4">
-            <button className="flex items-center gap-1 hover:text-pink-600 transition-colors">
-              Categories <ChevronDown size={14} className="group-hover:rotate-180 transition-transform" />
+        {/* Desktop Navigation Links */}
+        <nav className="hidden lg:flex items-center gap-6 text-[14px] font-medium text-gray-600">
+          <LinkNext
+            href="/products"
+            className="hover:text-pink-600 transition-colors"
+          >
+            Products
+          </LinkNext>
+
+          <div className="relative group py-4">
+            <button className="flex items-center gap-1 hover:text-pink-600 font-semibold">
+              Categories <ChevronDown size={14} />
             </button>
-            <div className="absolute top-full left-0 w-56 bg-white border border-gray-100 shadow-xl rounded-b-xl hidden group-hover:block">
+            <div className="absolute top-full left-0 w-56 bg-white border border-gray-100 shadow-xl rounded-lg hidden group-hover:block animate-in fade-in slide-in-from-top-2">
               <div className="py-2">
-                {categories.map((cat: any) => (
-                  <Link 
-                    key={cat.id} 
-                    href={`/categories/${cat.id}`}
-                    className="block px-4 py-2.5 hover:bg-pink-50 hover:text-pink-600 border-b last:border-0 border-gray-50"
-                  >
-                    {cat.name}
-                  </Link>
-                ))}
+                {categories.length > 0 ? (
+                  categories.map((cat: any) => (
+                    <LinkNext
+                      key={cat.id}
+                      href={`/categories/${cat.slug}`}
+                      className="block px-4 py-2 hover:bg-pink-50 hover:text-pink-600 border-b last:border-0 border-gray-50 text-sm"
+                    >
+                      {cat.name}
+                    </LinkNext>
+                  ))
+                ) : (
+                  <p className="px-4 py-2 text-xs text-gray-400">Loading...</p>
+                )}
               </div>
             </div>
           </div>
-
-          {navLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="hover:text-pink-600 transition-colors">
-              {link.name}
-            </Link>
-          ))}
-
-          {/* Auth Conditional Rendering */}
-          {isLoading ? (
-            <div className="h-8 w-20 bg-gray-100 animate-pulse rounded-full"></div>
-          ) : user ? (
-            <div className="flex items-center gap-4">
-              <Link 
-                href={getDashboardLink()}
-                className="flex items-center gap-1.5 bg-pink-600 text-white px-4 py-2 rounded-full hover:bg-pink-700 transition-all text-xs font-bold"
-              >
-                <LayoutDashboard size={14} /> Dashboard
-              </Link>
-              <Button
-                variant="ghost"
-                className="text-gray-500 hover:text-red-600 hover:bg-red-50 flex items-center gap-1"
-                onClick={handleLogout}
-              >
-                <LogOut size={16} /> Logout
-              </Button>
-            </div>
-          ) : (
-            <Link href="/login">
-              <Button variant="outline" className="border-pink-600 text-pink-600 hover:bg-pink-50 rounded-full px-6 h-9 font-bold">
-                Login
-              </Button>
-            </Link>
-          )}
         </nav>
 
-        {/* Mobile Toggle */}
-        <button onClick={() => setOpen(!open)} className="lg:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-md">
-          {open ? <span className="text-xl">✕</span> : <span className="text-xl">☰</span>}
-        </button>
+        {/* Icons & Auth Section */}
+        <div className="flex items-center gap-2 md:gap-4">
+          <LinkNext
+            href="/wishlist"
+            className="p-2 text-gray-600 hover:text-pink-600 relative"
+          >
+            <Heart size={22} />
+          </LinkNext>
+
+          <LinkNext
+            href="/cart"
+            className="p-2 text-gray-600 hover:text-pink-600 relative mr-2"
+          >
+            <ShoppingCart size={22} />
+          </LinkNext>
+
+          {isLoading ? (
+            <div className="h-8 w-8 bg-gray-100 rounded-full animate-pulse"></div>
+          ) : user ? (
+            <div className="flex items-center gap-3 border-l pl-4">
+              <LinkNext
+                href={getDashboardLink()}
+                className="hidden md:block text-sm font-semibold text-gray-700 hover:text-pink-600"
+              >
+                {isAdmin ? "Dashboard" : "My Profile"}
+              </LinkNext>
+
+           
+
+              <div className="flex items-center gap-2">
+   
+                <div className="relative w-8 h-8">
+                  {user.profileImage ? (
+                    <Image
+                      src={user.profileImage} 
+                      alt="User Profile"
+                      fill
+                      className="rounded-full border border-pink-200 object-cover"
+                    />
+                  ) : (
+                    
+                    <Image
+                      src="https://www.shutterstock.com/image-photo/indian-baby-girl-sitting-on-600nw-2168016381.jpg" 
+                      alt="Default Profile"
+                      fill
+                      className="rounded-full border border-pink-200 object-cover"
+                    />
+                  )}
+                </div>
+
+                <span className="hidden md:block text-sm font-medium text-gray-700">
+                  {user.name || user.email?.split("@")[0]}
+                </span>
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-gray-400 hover:text-red-500"
+                  onClick={handleLogout}
+                >
+                  <LogOut size={20} />
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <LinkNext href="/login">
+              <Button className="bg-pink-600 hover:bg-pink-700 text-white rounded-full px-6 text-sm font-bold">
+                Login
+              </Button>
+            </LinkNext>
+          )}
+
+          <button
+            onClick={() => setOpen(!open)}
+            className="lg:hidden p-2 text-gray-600 border rounded-md ml-2"
+          >
+            {open ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Sidebar */}
       {open && (
-        <div className="lg:hidden fixed inset-0 top-16 bg-white z-60 overflow-y-auto border-t p-4 space-y-6">
-          <div className="grid grid-cols-2 gap-3">
-            {navLinks.map((link) => (
-              <Link 
-                key={link.href} 
-                href={link.href} 
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg text-sm font-medium"
-              >
-                {link.icon} {link.name}
-              </Link>
-            ))}
-          </div>
+        <div className="lg:hidden fixed inset-0 top-16 bg-white z-50 border-t p-5 animate-in slide-in-from-right w-full">
+          <div className="space-y-4">
+            <LinkNext
+              onClick={() => setOpen(false)}
+              href="/products"
+              className="block p-4 bg-gray-50 rounded-xl font-semibold"
+            >
+              Products
+            </LinkNext>
 
-          <div className="pt-4 border-t">
-            {user ? (
-              <div className="space-y-3">
-                <Link 
-                  href={getDashboardLink()}
-                  onClick={() => setOpen(false)}
-                  className="flex items-center justify-center gap-2 bg-pink-600 text-white w-full py-3 rounded-xl font-bold"
-                >
-                  <LayoutDashboard size={18} /> Go to Dashboard
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center justify-center gap-2 w-full py-3 text-red-500 font-bold border border-red-100 rounded-xl bg-red-50/50"
-                >
-                  <LogOut size={18} /> Sign Out
-                </button>
-              </div>
-            ) : (
-              <Link 
-                href="/login" 
+            {user && (
+              <LinkNext
                 onClick={() => setOpen(false)}
-                className="block w-full text-center bg-pink-600 text-white py-4 rounded-xl font-bold"
+                href={getDashboardLink()}
+                className="block p-4 bg-pink-50 text-pink-600 rounded-xl font-bold items-center gap-2"
               >
-                Login to Account
-              </Link>
+                <LayoutDashboard size={18} />
+
+                {isAdmin ? "Admin Dashboard" : "My Profile"}
+              </LinkNext>
+            )}
+
+            {!user && (
+              <LinkNext
+                onClick={() => setOpen(false)}
+                href="/login"
+                className="block text-center bg-pink-600 text-white py-4 rounded-xl font-bold"
+              >
+                Login / Register
+              </LinkNext>
+            )}
+
+            {user && (
+              <button
+                onClick={handleLogout}
+                className="w-full text-center py-4 text-red-500 font-bold border border-red-100 rounded-xl bg-red-50"
+              >
+                Sign Out
+              </button>
             )}
           </div>
         </div>
