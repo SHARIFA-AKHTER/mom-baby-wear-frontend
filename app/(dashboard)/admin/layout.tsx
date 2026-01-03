@@ -11,7 +11,9 @@ import {
   Ticket, 
   Star, 
   Database,
-  Search
+  Search,
+  Settings,
+  Sparkles
 } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -25,6 +27,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     { name: "Coupons", icon: <Ticket size={20} />, href: "/admin/coupons" },
     { name: "Reviews", icon: <Star size={20} />, href: "/admin/reviews" },
     { name: "Inventory", icon: <Database size={20} />, href: "/admin/inventory" },
+    { name: "Settings", icon: <Settings size={20} />, href: "/admin/settings" },
+    { name: "AI Tools", icon: <Sparkles size={20} />, href: "/admin/ai-tools" }
   ];
 
   return (
