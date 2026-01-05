@@ -1,102 +1,111 @@
-// export default function Footer() {
-//   return (
-//     <footer className="bg-gray-900 text-gray-300 mt-10">
-//       <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
-//         <div>
-//           <h3 className="text-lg font-semibold text-white">
-//             Mom & Baby Wear
-//           </h3>
-//           <p className="text-sm mt-2">
-//             Quality products for moms and babies. Trusted & loved.
-//           </p>
-//         </div>
-
-//         <div>
-//           <h4 className="font-semibold text-white mb-2">Quick Links</h4>
-//           <ul className="space-y-2 text-sm">
-//             <li>Products</li>
-//             <li>Cart</li>
-//             <li>Profile</li>
-//           </ul>
-//         </div>
-
-//         <div>
-//           <h4 className="font-semibold text-white mb-2">Contact</h4>
-//           <p className="text-sm">Email: support@mombabywear.com</p>
-//           <p className="text-sm">Phone: +880 1234-567890</p>
-//         </div>
-//       </div>
-
-//       <div className="text-center text-xs py-4 border-t border-gray-700">
-//         © {new Date().getFullYear()} Mom & Baby Wear. All rights reserved.
-//       </div>
-//     </footer>
-//   );
-// }
-
 
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { 
+  Facebook, 
+  Instagram, 
+  Twitter, 
+  Mail, 
+  Phone, 
+  MapPin, 
+  Send,
+  Heart
+} from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-100 mt-20">
-      <div className="container mx-auto py-10 px-4 md:px-0 grid md:grid-cols-3 gap-8">
-        {/* About */}
-        <div>
-          <h3 className="text-lg font-bold mb-4">Mom & Baby Wear</h3>
-          <p className="text-gray-600">
-            Quality clothing, toys, and essentials for moms and babies. 
-            Trusted and loved by parents everywhere.
+ 
+    <footer className="bg-white border-t border-gray-100 mt-20">
+      <div className="max-w-7xl mx-auto px-4 py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
+        
+      
+        <div className="space-y-6">
+          <Link href="/" className="flex items-center gap-2">
+            <Image
+              src="/logo.jpeg"
+              alt="Logo"
+              width={40}
+              height={40}
+              className="rounded-full object-cover border border-pink-100"
+            />
+            <span className="text-xl font-bold text-pink-600">
+              Mom & Baby Wear
+            </span>
+          </Link>
+          <p className="text-gray-500 text-sm leading-relaxed">
+            Quality and comfort for you and your little one. We provide the best essentials for modern parenting.
           </p>
+          <div className="flex items-center gap-3">
+            {[Facebook, Instagram, Twitter].map((Icon, index) => (
+              <a key={index} href="#" className="p-2.5 bg-white border border-gray-100 text-gray-400 rounded-full hover:text-pink-600 hover:border-pink-200 hover:bg-pink-50 transition-all duration-300">
+                <Icon size={18} />
+              </a>
+            ))}
+          </div>
         </div>
 
-        {/* Quick Links */}
+        {/* 2. Quick Links */}
         <div>
-          <h3 className="text-lg font-bold mb-4">Quick Links</h3>
-          <ul className="space-y-2">
-            <li>
-              <Link href="/products" className="hover:text-blue-600">
-                Products
-              </Link>
+          <h3 className="text-gray-900 font-bold text-[15px] uppercase tracking-wider mb-6">Explore</h3>
+          <ul className="space-y-3">
+            {['Products', 'Categories', 'Offers', 'Contact Us'].map((item) => (
+              <li key={item}>
+                <Link href={`/${item.toLowerCase().replace(" ", "-")}`} className="text-gray-500 hover:text-pink-600 text-[14px] transition-colors inline-block">
+                  {item}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* 3. Support & Contact */}
+        <div>
+          <h3 className="text-gray-900 font-bold text-[15px] uppercase tracking-wider mb-6">Support</h3>
+          <ul className="space-y-4">
+            <li className="flex items-start gap-3 text-sm text-gray-500">
+              <MapPin size={18} className="text-pink-500 shrink-0 mt-0.5" />
+              <span>Dhaka, Bangladesh</span>
             </li>
-            <li>
-              <Link href="/categories/clothing" className="hover:text-blue-600">
-                Categories
-              </Link>
+            <li className="flex items-center gap-3 text-sm text-gray-500 font-medium">
+              <Phone size={17} className="text-pink-500 shrink-0" />
+              <span>+880 1700-000000</span>
             </li>
-            <li>
-              <Link href="/offers" className="hover:text-blue-600">
-                Offers
-              </Link>
-            </li>
-            <li>
-              <Link href="/contact" className="hover:text-blue-600">
-                Contact Us
-              </Link>
+            <li className="flex items-center gap-3 text-sm text-gray-500">
+              <Mail size={17} className="text-pink-500 shrink-0" />
+              <span>hello@momandbaby.com</span>
             </li>
           </ul>
         </div>
 
-        {/* Newsletter */}
-        <div>
-          <h3 className="text-lg font-bold mb-4">Newsletter</h3>
-          <p className="text-gray-600 mb-2">
-            Subscribe to get latest offers and updates.
-          </p>
-          <div className="flex gap-2">
+        {/* 4. Newsletter - Modern Look */}
+        <div className="bg-pink-50/50 p-6 rounded-3xl border border-pink-100/50">
+          <h3 className="text-gray-900 font-bold text-[15px] uppercase tracking-wider mb-3">Newsletter</h3>
+          <p className="text-gray-500 text-xs mb-4">Get 10% off on your first order!</p>
+          <div className="relative">
             <input
               type="email"
-              placeholder="Your email"
-              className="border border-gray-300 rounded px-3 py-2 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Email"
+              className="w-full bg-white border border-pink-100 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-pink-500 outline-none"
             />
-            <Button>Subscribe</Button>
+            <Button className="w-full mt-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl py-5 font-bold text-xs uppercase tracking-widest transition-all shadow-md shadow-pink-100">
+              Join Now <Send size={14} className="ml-2" />
+            </Button>
           </div>
         </div>
       </div>
 
-      <div className="border-t mt-8 pt-4 text-center text-gray-500 text-sm">
-        &copy; {new Date().getFullYear()} Mom & Baby Wear. All rights reserved.
+      <div className="border-t border-gray-50 py-8">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-gray-400 text-xs">
+            &copy; {new Date().getFullYear()} <span className="font-semibold text-pink-500">Mom & Baby Wear</span>. All rights reserved.
+          </p>
+          <div className="flex items-center gap-6 text-[11px] font-bold text-gray-400 uppercase tracking-widest">
+            <Link href="/privacy" className="hover:text-pink-600 transition-colors">Privacy</Link>
+            <Link href="/terms" className="hover:text-pink-600 transition-colors">Terms</Link>
+            <span className="flex items-center gap-1">Made with <Heart size={12} className="text-pink-500 fill-pink-500" /></span>
+          </div>
+        </div>
       </div>
     </footer>
   );

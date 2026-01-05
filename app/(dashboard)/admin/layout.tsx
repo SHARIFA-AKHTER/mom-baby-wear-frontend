@@ -28,7 +28,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     { name: "Reviews", icon: <Star size={20} />, href: "/admin/reviews" },
     { name: "Inventory", icon: <Database size={20} />, href: "/admin/inventory" },
     { name: "Settings", icon: <Settings size={20} />, href: "/admin/settings" },
-    { name: "AI Tools", icon: <Sparkles size={20} />, href: "/admin/ai-tools" }
+    { name: "AI Tools", icon: <Sparkles size={20} />, href: "/admin/ai-tools" },
+    { name: "Messages", icon: <Sparkles size={20} />, href: "/admin/messages" },
   ];
 
   return (

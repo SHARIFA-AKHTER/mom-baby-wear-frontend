@@ -1,28 +1,61 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-"use client";
+// "use client";
+// import { useQuery } from "@tanstack/react-query";
+// import axiosInstance from "../utils/axiosInstance";
+
+// export const useAuth = () => {
+
+//   const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+
+//   return useQuery({
+//     queryKey: ["me", token], 
+//     queryFn: async () => {
+//       if (!token) return null;
+//       try {
+//         const res = await axiosInstance.get("/auth/me");
+//         return res.data.data;
+//       } catch (err) {
+        
+//         localStorage.removeItem("accessToken");
+//         return null;
+//       }
+//     },
+//     staleTime: 1000 * 60 * 5,
+//     retry: false,
+//     enabled: !!token, 
+//   });
+// };
+
+// @/app/hooks/useAuth.ts
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../utils/axiosInstance";
+import Cookies from "js-cookie";
+import { useState, useEffect } from "react";
 
 export const useAuth = () => {
+  const [isClient, setIsClient] = useState(false);
 
-  const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  const token = isClient ? Cookies.get("accessToken") : null;
 
   return useQuery({
-    queryKey: ["me", token], 
+    queryKey: ["me", token],
     queryFn: async () => {
       if (!token) return null;
       try {
         const res = await axiosInstance.get("/auth/me");
         return res.data.data;
       } catch (err) {
-        
-        localStorage.removeItem("accessToken");
         return null;
       }
     },
-    staleTime: 1000 * 60 * 5,
+    enabled: isClient && !!token,
     retry: false,
-    enabled: !!token, 
+    staleTime: 1000 * 60 * 5,
   });
 };
