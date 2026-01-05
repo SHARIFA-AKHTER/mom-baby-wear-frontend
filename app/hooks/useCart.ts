@@ -29,7 +29,7 @@ export const useCart = () => {
     },
     onSuccess: (data) => {
       setItems(data.items || []);
-      queryClient.invalidateQueries(["useCart"]);
+     queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
   });
 
@@ -41,7 +41,7 @@ export const useCart = () => {
     },
     onSuccess: (data) => {
       setItems(data.items || []);
-      queryClient.invalidateQueries(["cart"]);
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
   });
 
@@ -53,7 +53,7 @@ export const useCart = () => {
     },
     onSuccess: () => {
       clearCart();
-      queryClient.invalidateQueries(["cart"]);
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
   });
 
