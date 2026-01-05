@@ -1,62 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-
-// "use client";
-
-// import { useState, useEffect } from "react";
-// import { ProductService } from "@/app/services/product.service";
-// import ProductRow from "./ProductRow";
-// import { useRouter } from "next/navigation";
-
-// export default function AdminProducts() {
-//   const [products, setProducts] = useState<any[]>([]);
-//   const router = useRouter();
-
-//   useEffect(() => {
-//     ProductService.getAll().then((res: any) => {
-      
-//       setProducts(res.data || res);
-//     });
-//   }, []);
-
-//   const handleDeleted = (id: string) => {
-//     setProducts(prev => prev.filter(p => p.id !== id));
-//   };
-
-//   return (
-//     <div className="p-4 md:p-8 max-w-6xl mx-auto">
-//       <div className="flex justify-between items-center mb-6">
-//         <h1 className="text-2xl font-bold text-gray-800">Manage Products</h1>
-//         <button 
-//            onClick={() => router.push('/admin/products/add')}
-//            className="bg-green-600 text-white px-4 py-2 rounded shadow"
-//         >
-//           Add Product
-//         </button>
-//       </div>
-
-//       <div className="hidden md:block bg-white shadow rounded-lg overflow-hidden">
-//         <table className="w-full">
-//           <thead className="bg-gray-100 border-b">
-//             <tr>
-//               <th className="p-4 text-left">Title</th>
-//               <th className="p-4">Price</th>
-//               <th className="p-4">Stock</th>
-//               <th className="p-4">Actions</th>
-//             </tr>
-//           </thead>
-//           <tbody>
-//             {products.map(p => (
-//               <ProductRow key={p.id} product={p} onDeleted={handleDeleted} />
-//             ))}
-//           </tbody>
-//         </table>
-//       </div>
-
-//       {/* Mobile view and other logic can remain as you have */}
-//     </div>
-//   );
-// }
 
 "use client";
 
@@ -64,7 +8,7 @@ import { useState, useEffect } from "react";
 import { ProductService } from "@/app/services/product.service";
 import ProductRow from "./ProductRow";
 import { useRouter } from "next/navigation";
-import { Plus, Package, Edit, Trash2 } from "lucide-react"; // আইকন ব্যবহারের জন্য (ঐচ্ছিক)
+import { Plus, Package, Edit, Trash2 } from "lucide-react"; 
 
 export default function AdminProducts() {
   const [products, setProducts] = useState<any[]>([]);

@@ -65,7 +65,7 @@ export default function AdminMessagesPage() {
                 <div className="flex-1 space-y-4">
                   <div className="flex items-center gap-3">
                     {/* Avatar Initials */}
-                    <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-400 flex items-center justify-center text-white font-bold shadow-inner uppercase">
+                    <div className="h-12 w-12 rounded-2xl bg-linear-to-br from-pink-500 to-rose-400 flex items-center justify-center text-white font-bold shadow-inner uppercase">
                       {msg.name.charAt(0)}
                     </div>
                     <div>

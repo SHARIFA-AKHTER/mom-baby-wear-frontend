@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -20,7 +22,7 @@ export default function AdminInventoryPage() {
 
   const inventoryData = data?.data || [];
 
-  // স্টক আপডেট মিউটেশন
+
   const updateMutation = useMutation({
     mutationFn: ({ productId, quantity }: { productId: string; quantity: number }) =>
       InventoryService.updateStock(productId, quantity),
