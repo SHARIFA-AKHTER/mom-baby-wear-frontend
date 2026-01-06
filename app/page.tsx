@@ -1,4 +1,3 @@
-
 // /* eslint-disable @typescript-eslint/no-explicit-any */
 // "use client";
 
@@ -46,10 +45,10 @@
 //             </h2>
 //             <div className="h-1.5 w-16 md:w-24 bg-pink-500 mt-2 rounded-full"></div>
 //           </div>
-          
+
 //           <Link href="/products" className="w-full sm:w-auto">
-//             <Button 
-//               variant="outline" 
+//             <Button
+//               variant="outline"
 //               className="w-full sm:w-auto border-pink-200 text-pink-600 font-bold hover:bg-pink-50 rounded-full px-8 py-6 transition-all group"
 //             >
 //               View All Products
@@ -100,7 +99,15 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import HeroSlider from "./components/common/HeroSlider";
 import { ProductService } from "@/app/services/product.service";
-import { Loader2, ShoppingBag, ArrowRight, LayoutGrid, Star, ShieldCheck, Truck } from "lucide-react";
+import {
+  Loader2,
+  ShoppingBag,
+  ArrowRight,
+  LayoutGrid,
+  Star,
+  ShieldCheck,
+  Truck,
+} from "lucide-react";
 import ProductCard from "./product/ProductCard";
 import Link from "next/link";
 import ContactSection from "./contact/page";
@@ -166,16 +173,31 @@ export default function HomePage() {
           <h2 className="text-xl md:text-3xl font-black text-gray-900 flex items-center gap-2">
             <LayoutGrid className="text-pink-500" /> Shop Categories
           </h2>
-          <Link href="/categories" className="text-pink-600 text-sm font-bold hover:underline">View All</Link>
+          <Link
+            href="/categories"
+            className="text-pink-600 text-sm font-bold hover:underline"
+          >
+            View All
+          </Link>
         </div>
-        
+
         <div className="flex overflow-x-auto pb-4 gap-6 scrollbar-hide md:grid md:grid-cols-6 md:overflow-visible">
           {categories.map((cat) => (
-            <Link key={cat.id} href={`/categories/${cat.id}`} className="shrink-0 group flex flex-col items-center gap-3">
+            <Link
+              key={cat.id}
+              href={`/categories/${cat.id}`}
+              className="shrink-0 group flex flex-col items-center gap-3"
+            >
               <div className="w-20 h-20 md:w-28 md:h-28 rounded-full border-2 border-pink-100 p-1 group-hover:border-pink-500 transition-all duration-300 shadow-sm">
-                <img src={cat.image || "/placeholder.png"} alt={cat.name} className="w-full h-full object-cover rounded-full" />
+                <img
+                  src={cat.image || "/placeholder.png"}
+                  alt={cat.name}
+                  className="w-full h-full object-cover rounded-full"
+                />
               </div>
-              <span className="text-sm font-bold text-gray-700 group-hover:text-pink-600">{cat.name}</span>
+              <span className="text-sm font-bold text-gray-700 group-hover:text-pink-600">
+                {cat.name}
+              </span>
             </Link>
           ))}
         </div>
@@ -184,16 +206,23 @@ export default function HomePage() {
       {/* 4. New Arrivals (Product Grid) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex items-center justify-between mb-10">
-          <h2 className="text-2xl md:text-4xl font-black text-gray-900">New Arrivals</h2>
+          <h2 className="text-2xl md:text-4xl font-black text-gray-900">
+            New Arrivals
+          </h2>
           <Link href="/products">
-            <Button variant="ghost" className="text-pink-600 hover:bg-pink-50 font-bold">
+            <Button
+              variant="ghost"
+              className="text-pink-600 hover:bg-pink-50 font-bold"
+            >
               Explore More <ArrowRight className="ml-2" size={18} />
             </Button>
           </Link>
         </div>
 
         {loading ? (
-          <div className="flex justify-center py-20"><Loader2 className="animate-spin text-pink-500" size={40} /></div>
+          <div className="flex justify-center py-20">
+            <Loader2 className="animate-spin text-pink-500" size={40} />
+          </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
             {products.slice(0, 8).map((product) => (
@@ -207,12 +236,25 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="bg-linear-to-r from-pink-500 to-rose-400 rounded-3xl p-8 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8 text-white">
           <div className="max-w-md space-y-4 text-center md:text-left">
-            <h2 className="text-3xl md:text-5xl font-black">Special Mother-Baby Matching!</h2>
-            <p className="opacity-90">Get up to 20% discount on matching outfits for mom and the little one.</p>
-            <Button className="bg-white text-pink-600 font-bold hover:bg-gray-100 rounded-full px-10">Shop Now</Button>
+            <h2 className="text-3xl md:text-5xl font-black">
+              Special Mother-Baby Matching!
+            </h2>
+            <p className="opacity-90">
+              Get up to 20% discount on matching outfits for mom and the little
+              one.
+            </p>
+            <Link href={`/categories/mother-and-baby-gown-set`}>
+              <Button className="bg-white text-pink-600 font-bold hover:bg-gray-100 rounded-full px-10">
+                Shop Now
+              </Button>
+            </Link>
           </div>
           <div className="w-full md:w-1/3">
-             <img src="https://via.placeholder.com/400x300?text=Promo+Banner" alt="Promo" className="rounded-2xl shadow-2xl" />
+            <img
+              src="https://i.pinimg.com/474x/0b/d8/81/0bd881d3583c07af38f2e3bcf91dab1c.jpg"
+              alt="Promo"
+              className="rounded-2xl shadow-2xl"
+            />
           </div>
         </div>
       </section>
