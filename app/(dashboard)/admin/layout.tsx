@@ -30,6 +30,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     { name: "Settings", icon: <Settings size={20} />, href: "/admin/settings" },
     { name: "AI Tools", icon: <Sparkles size={20} />, href: "/admin/ai-tools" },
     { name: "Messages", icon: <Sparkles size={20} />, href: "/admin/messages" },
+    { name: "Categories", icon: <Sparkles size={20} />, href: "/admin/categories" },
   ];
 
   return (
