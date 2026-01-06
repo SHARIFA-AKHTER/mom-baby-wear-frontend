@@ -104,7 +104,7 @@ export default function Navbar() {
                   categories.map((cat: any) => (
                     <LinkNext
                       key={cat.id}
-                      href={`/categories/${cat.slug}`}
+                      href={`/categories/${cat.id}`}
                       className="block px-4 py-2 hover:bg-pink-50 hover:text-pink-600 border-b last:border-0 border-gray-50 text-sm"
                     >
                       {cat.name}

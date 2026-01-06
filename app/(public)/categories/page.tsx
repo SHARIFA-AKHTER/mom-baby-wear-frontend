@@ -1,7 +1,7 @@
-/* eslint-disable @next/next/no-img-element */
+ 
 import Link from "next/link";
 
-// Category Interface based on your Backend JSON
+
 interface Category {
   id: string;
   name: string;
@@ -20,7 +20,7 @@ async function getAllCategories(): Promise<Category[]> {
   }
 
   const jsonResponse = await res.json();
-  // Tomar backend response-e 'data' field-e array thake
+  
   return jsonResponse.data || [];
 }
 

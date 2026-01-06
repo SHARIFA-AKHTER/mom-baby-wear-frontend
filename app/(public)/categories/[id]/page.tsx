@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @next/next/no-img-element */
+ 
+ 
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -15,7 +15,6 @@ interface Product {
 async function getCategoryData(id: string) {
   const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-  // Backend URL: http://localhost:5000/api/category/bc432c3e-c11f-42fc-ad75-30e24957498a
   const res = await fetch(`${API_URL}/category/${id}`, {
     cache: "no-store", // SSR data fetching
   });
@@ -27,8 +26,7 @@ async function getCategoryData(id: string) {
 
   const jsonResponse = await res.json();
   
-  // Tomar sendResponse function 'data' field-e result pathay
-  // Ar Prisma 'include' korle products array result-er bhetore thake
+ 
   return {
     categoryName: jsonResponse.data?.name || "Category",
     products: jsonResponse.data?.products || []
