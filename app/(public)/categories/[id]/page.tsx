@@ -1,22 +1,19 @@
- 
- 
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-// TypeScript Interface
 interface Product {
+  title: string | undefined;
   id: string;
-  name: string;
   price: number;
-  image: string;
+  images: string[]; 
 }
 
 async function getCategoryData(id: string) {
   const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   const res = await fetch(`${API_URL}/category/${id}`, {
-    cache: "no-store", // SSR data fetching
+    cache: "no-store", 
   });
 
   if (!res.ok) {
@@ -26,7 +23,6 @@ async function getCategoryData(id: string) {
 
   const jsonResponse = await res.json();
   
- 
   return {
     categoryName: jsonResponse.data?.name || "Category",
     products: jsonResponse.data?.products || []
@@ -63,12 +59,14 @@ export default async function CategoryPage({ params }: { params: { id: string } 
             >
               <div className="aspect-square overflow-hidden rounded-xl bg-gray-100 mb-4">
                 <img
-                  src={product.image || "https://via.placeholder.com/300"}
-                  alt={product.name}
+                
+                  src={(product.images && product.images.length > 0) ? product.images[0] : "https://via.placeholder.com/300"}
+                  alt={product.title}
                   className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
               </div>
-              <h3 className="font-semibold text-gray-800 line-clamp-1">{product.name}</h3>
+         
+              <h3 className="font-semibold text-gray-800 line-clamp-1">{product.title}</h3>
               <div className="flex justify-between items-center mt-3">
                 <p className="text-xl font-bold text-orange-600">৳ {product.price}</p>
                 <span className="bg-gray-100 text-[10px] uppercase px-2 py-1 rounded font-bold text-gray-500">Details</span>
