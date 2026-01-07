@@ -1,21 +1,23 @@
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import { useState, useEffect } from "react";
 import { CategoryService } from "@/app/services/category.service";
-import { Trash2, Edit, Plus, Loader2, Search, X } from "lucide-react";
+import { Trash2, Edit, Plus, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 
 export default function AdminCategoriesPage() {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   
-  // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingCategory, setEditingCategory] = useState<any>(null);
-  const [formData, setFormData] = useState({ name: "", image: "", description: "" });
+  
+
+  const [formData, setFormData] = useState({ name: "", image: "", slug: "" });
 
   const fetchCategories = async () => {
     try {
@@ -32,18 +34,35 @@ export default function AdminCategoriesPage() {
     fetchCategories();
   }, []);
 
-  // Open Modal for Create or Edit
+
+  const generateSlug = (name: string) => {
+    return name
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/\s+/g, "-");
+  };
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const name = e.target.value;
+    setFormData({
+      ...formData,
+      name,
+      slug: generateSlug(name), 
+    });
+  };
+
   const openModal = (category: any = null) => {
     if (category) {
       setEditingCategory(category);
       setFormData({ 
         name: category.name, 
-        image: category.image, 
-        description: category.description || "" 
+        image: category.image,
+        slug: category.slug 
       });
     } else {
       setEditingCategory(null);
-      setFormData({ name: "", image: "", description: "" });
+      setFormData({ name: "", image: "", slug: "" });
     }
     setIsModalOpen(true);
   };
@@ -51,13 +70,12 @@ export default function AdminCategoriesPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    
     try {
       if (editingCategory) {
-        // Update logic
         await CategoryService.update(editingCategory.id, formData);
         toast.success("Category updated!");
       } else {
-        // Create logic
         await CategoryService.create(formData);
         toast.success("Category created!");
       }
@@ -85,7 +103,6 @@ export default function AdminCategoriesPage() {
   return (
     <div className="min-h-screen bg-gray-50/50 p-4 md:p-8 relative">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="text-2xl md:text-3xl font-black text-gray-900">
@@ -101,9 +118,10 @@ export default function AdminCategoriesPage() {
           </button>
         </div>
 
-        {/* Data View (Table & Cards) */}
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-20"><Loader2 className="animate-spin text-pink-500" size={40} /></div>
+          <div className="flex flex-col items-center justify-center py-20">
+            <Loader2 className="animate-spin text-pink-500" size={40} />
+          </div>
         ) : (
           <div className="hidden md:block bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
             <table className="w-full text-left">
@@ -126,8 +144,12 @@ export default function AdminCategoriesPage() {
                     </td>
                     <td className="p-6 text-right">
                       <div className="flex justify-end gap-3">
-                        <button onClick={() => openModal(cat)} className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-all"><Edit size={18} /></button>
-                        <button onClick={() => handleDelete(cat.id)} className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-all"><Trash2 size={18} /></button>
+                        <button onClick={() => openModal(cat)} className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-all">
+                          <Edit size={18} />
+                        </button>
+                        <button onClick={() => handleDelete(cat.id)} className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-all">
+                          <Trash2 size={18} />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -138,9 +160,8 @@ export default function AdminCategoriesPage() {
         )}
       </div>
 
-      {/* --- ADD/EDIT MODAL --- */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-white w-full max-w-md rounded-[2.5rem] p-8 shadow-2xl relative animate-in fade-in zoom-in duration-300">
             <button 
               onClick={() => setIsModalOpen(false)}
@@ -160,9 +181,21 @@ export default function AdminCategoriesPage() {
                   type="text" 
                   required
                   value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  onChange={handleNameChange}
                   className="w-full p-4 bg-gray-50 rounded-2xl border-2 border-transparent focus:border-pink-200 outline-none transition-all"
                   placeholder="e.g. Baby Dress"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-bold text-gray-600 block mb-2 ml-1">Slug (Auto-generated)</label>
+                <input 
+                  type="text" 
+                  required
+                  value={formData.slug}
+                  onChange={(e) => setFormData({...formData, slug: e.target.value})}
+                  className="w-full p-4 bg-gray-100 rounded-2xl border-2 border-transparent text-gray-500 outline-none"
+                  placeholder="baby-dress"
                 />
               </div>
 
@@ -175,17 +208,6 @@ export default function AdminCategoriesPage() {
                   onChange={(e) => setFormData({...formData, image: e.target.value})}
                   className="w-full p-4 bg-gray-50 rounded-2xl border-2 border-transparent focus:border-pink-200 outline-none transition-all"
                   placeholder="https://image-link.com"
-                />
-              </div>
-
-              <div>
-                <label className="text-sm font-bold text-gray-600 block mb-2 ml-1">Description (Optional)</label>
-                <textarea 
-                  value={formData.description}
-                  onChange={(e) => setFormData({...formData, description: e.target.value})}
-                  className="w-full p-4 bg-gray-50 rounded-2xl border-2 border-transparent focus:border-pink-200 outline-none transition-all resize-none"
-                  rows={3}
-                  placeholder="Short description..."
                 />
               </div>
 

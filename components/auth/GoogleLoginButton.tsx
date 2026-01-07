@@ -35,8 +35,7 @@ export default function GoogleLoginButton() {
         
         await queryClient.invalidateQueries({ queryKey: ["me"] });
 
-       
-        router.replace("/");
+       router.push("/")
         router.refresh();
       }
     } catch (error: any) {

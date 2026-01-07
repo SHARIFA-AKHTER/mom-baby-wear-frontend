@@ -23,19 +23,6 @@ export default function LoginPage() {
     resolver: zodResolver(loginSchema),
   });
 
-  // const onSubmit = async (data: LoginInput) => {
-  //   try {
-  //     await AuthService.login(data);
-  //     toast.success("Welcome back!");
-      
-  //     await queryClient.invalidateQueries({ queryKey: ["me"] });
-  //     router.replace("/");
-  //     setTimeout(() => router.refresh(), 100); 
-  //   } catch (error: any) {
-  //     toast.error(error?.response?.data?.message || "Login failed");
-  //   }
-  // };
-
   const onSubmit = async (data: { email: string; password: string; }) => {
   try {
     const result = await AuthService.login(data);
