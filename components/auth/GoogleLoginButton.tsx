@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -13,30 +12,36 @@ export default function GoogleLoginButton() {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-
   const handleGoogleSuccess = async (response: any) => {
     try {
       const idToken = response.credential;
       const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/google`;
       
-      const res = await axios.post(apiUrl, { idToken });
+      
+      const res = await axios.post(apiUrl, { idToken }, { withCredentials: true });
 
       if (res.data.success) {
+       
         const token = res.data.data.accessToken;
 
-
-        Cookies.set("accessToken", token, { expires: 7 });
-        
+        Cookies.set("accessToken", token, { 
+          expires: 7,
+          secure: true, 
+          sameSite: 'none' 
+        });
 
         localStorage.setItem("accessToken", token);
 
         toast.success("Login Successful!");
 
-        
+
         await queryClient.invalidateQueries({ queryKey: ["me"] });
 
-       router.push("/")
-        router.refresh();
+     
+        router.push("/");
+        setTimeout(() => {
+          router.refresh();
+        }, 100);
       }
     } catch (error: any) {
       console.error("Google Login Error:", error);
