@@ -77,3 +77,4 @@ Sending the Google idToken to the backend for verification.
 Storing the accessToken in HTTP-Only Cookies and LocalStorage for session persistence.
 
 Using a custom useAxios hook with withCredentials: true to ensure secure cross-origin requests.
+

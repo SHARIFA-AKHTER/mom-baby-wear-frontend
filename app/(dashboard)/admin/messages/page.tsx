@@ -1,9 +1,18 @@
+/* eslint-disable react/jsx-no-comment-textnodes */
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { MessageService } from "@/app/services/message.service";
-import { Mail, Trash2, Calendar, MessageSquare, Loader2, Inbox } from "lucide-react";
-import { toast } from "sonner"; 
+import {
+  Mail,
+  Trash2,
+  Calendar,
+  MessageSquare,
+  Loader2,
+  Inbox,
+} from "lucide-react";
+import { toast } from "sonner";
 
 export default function AdminMessagesPage() {
   const queryClient = useQueryClient();
@@ -14,7 +23,6 @@ export default function AdminMessagesPage() {
   });
 
   const messages = data?.data || [];
-
 
   const deleteMutation = useMutation({
     mutationFn: MessageService.deleteMessage,
@@ -44,7 +52,9 @@ export default function AdminMessagesPage() {
             </div>
             Customer Inbox
           </h1>
-          <p className="text-gray-500 text-sm mt-1">Manage all received inquiries from your website.</p>
+          <p className="text-gray-500 text-sm mt-1">
+            Manage all received inquiries from your website.
+          </p>
         </div>
         <div className="bg-white px-4 py-2 rounded-full shadow-sm border text-sm font-semibold text-gray-600">
           Total: {messages.length} Messages
@@ -55,12 +65,11 @@ export default function AdminMessagesPage() {
       <div className="mx-auto max-w-6xl space-y-4">
         {messages.length > 0 ? (
           messages.map((msg: any) => (
-            <div 
-              key={msg.id} 
+            <div
+              key={msg.id}
               className="group relative bg-white border border-gray-100 rounded-2xl p-4 md:p-6 shadow-sm hover:shadow-md transition-all duration-300"
             >
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                
                 {/* User Info & Message */}
                 <div className="flex-1 space-y-4">
                   <div className="flex items-center gap-3">
@@ -69,8 +78,13 @@ export default function AdminMessagesPage() {
                       {msg.name.charAt(0)}
                     </div>
                     <div>
-                      <h3 className="font-bold text-gray-900 text-lg leading-none">{msg.name}</h3>
-                      <a href={`mailto:${msg.email}`} className="text-sm text-pink-600 hover:underline flex items-center gap-1 mt-1">
+                      <h3 className="font-bold text-gray-900 text-lg leading-none">
+                        {msg.name}
+                      </h3>
+                      <a
+                        href={`mailto:${msg.email}`}
+                        className="text-sm text-pink-600 hover:underline flex items-center gap-1 mt-1"
+                      >
                         <Mail size={12} /> {msg.email}
                       </a>
                     </div>
@@ -78,45 +92,86 @@ export default function AdminMessagesPage() {
 
                   {/* Message Box */}
                   <div className="bg-gray-50 rounded-2xl p-4 text-gray-700 text-sm md:text-base leading-relaxed border border-gray-50 flex gap-3">
-                    <MessageSquare size={18} className="text-gray-400 shrink-0 mt-1" />
+                    <MessageSquare
+                      size={18}
+                      className="text-gray-400 shrink-0 mt-1"
+                    />
                     <p className="whitespace-pre-line">{msg.message}</p>
                   </div>
+
+                  {msg.autoReply && (
+                    <div className="bg-pink-50/50 rounded-2xl p-4 border border-pink-100 flex gap-3 ml-4">
+                      <div className="bg-white p-1.5 rounded-lg h-fit shadow-sm">
+                        <Loader2
+                          size={16}
+                          className="text-pink-600 animate-pulse"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-[10px] font-bold text-pink-600 uppercase tracking-widest">
+                            AI Assistant Reply
+                          </span>
+                        </div>
+                        // eslint-disable-next-line react/jsx-no-comment-textnodes
+                        <p className="text-sm text-gray-600 italic leading-relaxed">
+                          // eslint-disable-next-line react/no-unescaped-entities
+                          "{msg.autoReply}"
+                        </p>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Metadata */}
                   <div className="flex items-center gap-4 text-[12px] font-medium text-gray-400">
                     <span className="flex items-center gap-1.5 bg-gray-100 px-3 py-1 rounded-full">
-                      <Calendar size={13} /> 
-                      {new Date(msg.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      <Calendar size={13} />
+                      {new Date(msg.createdAt).toLocaleDateString("en-GB", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
                     </span>
                   </div>
                 </div>
 
                 {/* Actions */}
                 <div className="flex md:flex-col items-center justify-end border-t md:border-t-0 pt-3 md:pt-0">
-                  <button 
+                  <button
                     onClick={() => {
-                      if(window.confirm("Are you sure you want to delete this message?")) {
+                      if (
+                        window.confirm(
+                          "Are you sure you want to delete this message?"
+                        )
+                      ) {
                         deleteMutation.mutate(msg.id);
                       }
                     }}
                     disabled={deleteMutation.isPending}
                     className="flex items-center gap-2 px-4 py-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all font-semibold text-sm"
                   >
-                    {deleteMutation.isPending ? <Loader2 className="animate-spin" size={18} /> : <Trash2 size={18} />}
+                    {deleteMutation.isPending ? (
+                      <Loader2 className="animate-spin" size={18} />
+                    ) : (
+                      <Trash2 size={18} />
+                    )}
                     <span className="md:hidden lg:inline">Delete</span>
                   </button>
                 </div>
-
               </div>
             </div>
           ))
         ) : (
           <div className="bg-white rounded-3xl p-20 text-center border-2 border-dashed border-gray-100">
             <div className="bg-gray-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-               <Mail className="text-gray-300" size={40} />
+              <Mail className="text-gray-300" size={40} />
             </div>
-            <h2 className="text-xl font-bold text-gray-800">Your inbox is empty</h2>
-            <p className="text-gray-500">When customers contact you, messages will appear here.</p>
+            <h2 className="text-xl font-bold text-gray-800">
+              Your inbox is empty
+            </h2>
+            <p className="text-gray-500">
+              When customers contact you, messages will appear here.
+            </p>
           </div>
         )}
       </div>

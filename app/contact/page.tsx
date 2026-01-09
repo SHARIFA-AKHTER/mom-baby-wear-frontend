@@ -14,8 +14,21 @@ export default function ContactSection() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: MessageService.sendMessage,
-    onSuccess: () => {
+ onSuccess: (data: any) => {
+    
       toast.success("Message sent successfully!");
+
+   
+      if (data?.data?.autoReply) {
+        setTimeout(() => {
+          toast("AI Assistant:", {
+            description: data.data.autoReply,
+            icon: <MessageCircle className="text-pink-500" />,
+            duration: 6000, 
+          });
+        }, 1000); 
+      }
+
       setFormData({ name: "", email: "", message: "" });
     },
     onError: (error: any) => {
