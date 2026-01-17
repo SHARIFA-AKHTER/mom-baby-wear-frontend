@@ -113,7 +113,7 @@ import Link from "next/link";
 import ContactSection from "./contact/page";
 
 export default function HomePage() {
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<any>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -225,9 +225,11 @@ export default function HomePage() {
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
-            {products.slice(0, 8).map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+            {(Array.isArray(products) ? products : products?.result || [])
+              .slice(0, 8)
+              .map((product: any) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
           </div>
         )}
       </section>
