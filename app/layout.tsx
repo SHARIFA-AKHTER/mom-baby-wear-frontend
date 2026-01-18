@@ -18,13 +18,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="en">
-      <body className={`antialiased`}>
+      <body className={"antialiased bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300"}>
         <QueryProvider>
           
           <GoogleOAuthProvider clientId={googleClientId}>
             <AuthProvider>
               <Navbar />
-              <main className="container mx-auto px-4 min-h-screen">
+              <main className="container mx-auto px-4 min-h-screen bg-transparent">
                 {children}
               </main>
               <Footer />

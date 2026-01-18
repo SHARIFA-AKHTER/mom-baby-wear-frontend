@@ -1,4 +1,4 @@
-
+/* eslint-disable react/no-unescaped-entities */
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -10,36 +10,54 @@ import {
   Phone, 
   MapPin, 
   Send,
-  Heart
+  Heart,
+  MessageCircle, // For WhatsApp
+  Linkedin,
+  Youtube
 } from "lucide-react";
 
 export default function Footer() {
+  const socialLinks = [
+    { icon: Facebook, href: "https://www.facebook.com/joya.joba.9/", color: "hover:text-blue-600" },
+    { icon: Instagram, href: "#", color: "hover:text-pink-500" },
+    { icon: Twitter, href: "https://x.com/AkhterShar40032", color: "hover:text-sky-500" },
+    { icon: MessageCircle, href: "https://web.whatsapp.com", color: "hover:text-green-500" }, 
+    { icon: Linkedin, href: "https://www.linkedin.com/in/sharifa-akhter-784bb6252", color: "hover:text-blue-700" },
+    { icon: Youtube, href: "https://www.youtube.com/@SharifaAkhter012", color: "hover:text-blue-700" },
+  ];
+
   return (
- 
-    <footer className="bg-white border-t border-gray-100 mt-20">
+    <footer className="bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800 mt-20 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
         
-      
+        {/* 1. Brand Section */}
         <div className="space-y-6">
           <Link href="/" className="flex items-center gap-2">
-            <Image
-              src="/logo.jpeg"
-              alt="Logo"
-              width={40}
-              height={40}
-              className="rounded-full object-cover border border-pink-100"
-            />
-            <span className="text-xl font-bold text-pink-600">
-              Mom & Baby Wear
+            <div className="relative w-10 h-10 overflow-hidden rounded-full border border-pink-100">
+                <Image
+                src="/logo.jpeg"
+                alt="Logo"
+                fill
+                className="object-cover"
+                />
+            </div>
+            <span className="text-xl font-bold bg-gradient-to-r from-pink-600 to-rose-500 bg-clip-text text-transparent">
+              Mom & Baby
             </span>
           </Link>
-          <p className="text-gray-500 text-sm leading-relaxed">
-            Quality and comfort for you and your little one. We provide the best essentials for modern parenting.
+          <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
+            Premium quality essentials for mothers and newborns. We prioritize your comfort and your baby's smile.
           </p>
-          <div className="flex items-center gap-3">
-            {[Facebook, Instagram, Twitter].map((Icon, index) => (
-              <a key={index} href="#" className="p-2.5 bg-white border border-gray-100 text-gray-400 rounded-full hover:text-pink-600 hover:border-pink-200 hover:bg-pink-50 transition-all duration-300">
-                <Icon size={18} />
+          <div className="flex flex-wrap gap-2">
+            {socialLinks.map((item, index) => (
+              <a 
+                key={index} 
+                href={item.href} 
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`p-2 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-gray-400 rounded-lg ${item.color} hover:bg-white dark:hover:bg-gray-800 transition-all duration-300 shadow-sm`}
+              >
+                <item.icon size={20} />
               </a>
             ))}
           </div>
@@ -47,11 +65,12 @@ export default function Footer() {
 
         {/* 2. Quick Links */}
         <div>
-          <h3 className="text-gray-900 font-bold text-[15px] uppercase tracking-wider mb-6">Explore</h3>
+          <h3 className="text-gray-900 dark:text-white font-bold text-sm uppercase tracking-widest mb-6">Shopping</h3>
           <ul className="space-y-3">
-            {['Products', 'Categories', 'Offers', 'Contact Us'].map((item) => (
+            {['New Arrivals', 'Best Sellers', 'Baby Care', 'Maternity Wear', 'Offers'].map((item) => (
               <li key={item}>
-                <Link href={`/${item.toLowerCase().replace(" ", "-")}`} className="text-gray-500 hover:text-pink-600 text-[14px] transition-colors inline-block">
+                <Link href={`/products?category=${item.toLowerCase()}`} className="text-gray-500 dark:text-gray-400 hover:text-pink-600 dark:hover:text-pink-400 text-sm transition-colors flex items-center gap-2 group">
+                  <span className="w-1.5 h-1.5 rounded-full bg-pink-200 group-hover:bg-pink-500 transition-all"></span>
                   {item}
                 </Link>
               </li>
@@ -59,51 +78,62 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* 3. Support & Contact */}
+        {/* 3. Customer Service */}
         <div>
-          <h3 className="text-gray-900 font-bold text-[15px] uppercase tracking-wider mb-6">Support</h3>
+          <h3 className="text-gray-900 dark:text-white font-bold text-sm uppercase tracking-widest mb-6">Contact Us</h3>
           <ul className="space-y-4">
-            <li className="flex items-start gap-3 text-sm text-gray-500">
-              <MapPin size={18} className="text-pink-500 shrink-0 mt-0.5" />
-              <span>Dhaka, Bangladesh</span>
+            <li className="flex items-start gap-3 text-sm text-gray-500 dark:text-gray-400">
+              <MapPin size={18} className="text-pink-500 shrink-0" />
+              <span>Gulshan-1, Dhaka, Bangladesh</span>
             </li>
-            <li className="flex items-center gap-3 text-sm text-gray-500 font-medium">
-              <Phone size={17} className="text-pink-500 shrink-0" />
+            <li className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400 font-semibold">
+              <Phone size={18} className="text-pink-500 shrink-0" />
               <span>+880 1700-000000</span>
             </li>
-            <li className="flex items-center gap-3 text-sm text-gray-500">
-              <Mail size={17} className="text-pink-500 shrink-0" />
-              <span>hello@momandbaby.com</span>
+            <li className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
+              <Mail size={18} className="text-pink-500 shrink-0" />
+              <span>support@momnbaby.com</span>
             </li>
           </ul>
         </div>
 
-        {/* 4. Newsletter - Modern Look */}
-        <div className="bg-pink-50/50 p-6 rounded-3xl border border-pink-100/50">
-          <h3 className="text-gray-900 font-bold text-[15px] uppercase tracking-wider mb-3">Newsletter</h3>
-          <p className="text-gray-500 text-xs mb-4">Get 10% off on your first order!</p>
-          <div className="relative">
-            <input
-              type="email"
-              placeholder="Email"
-              className="w-full bg-white border border-pink-100 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-pink-500 outline-none"
-            />
-            <Button className="w-full mt-3 bg-pink-600 hover:bg-pink-700 text-white rounded-xl py-5 font-bold text-xs uppercase tracking-widest transition-all shadow-md shadow-pink-100">
-              Join Now <Send size={14} className="ml-2" />
-            </Button>
+        {/* 4. Newsletter */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-pink-50 to-white dark:from-gray-900 dark:to-gray-950 p-6 rounded-3xl border border-pink-100/50 dark:border-gray-800">
+          <div className="relative z-10">
+            <h3 className="text-gray-900 dark:text-white font-bold text-sm uppercase mb-2">Join the Club</h3>
+            <p className="text-gray-500 dark:text-gray-400 text-xs mb-4 font-medium">Get updates on new drops and exclusive offers.</p>
+            <div className="space-y-3">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 dark:text-white rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-pink-400"
+              />
+              <Button className="w-full bg-pink-600 hover:bg-pink-700 text-white rounded-xl py-6 font-bold shadow-lg shadow-pink-200 dark:shadow-none transition-transform active:scale-95">
+                Subscribe <Send size={16} className="ml-2" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="border-t border-gray-50 py-8">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-gray-400 text-xs">
-            &copy; {new Date().getFullYear()} <span className="font-semibold text-pink-500">Mom & Baby Wear</span>. All rights reserved.
+      {/* Bottom Bar */}
+      <div className="border-t border-gray-50 dark:border-gray-900 py-8">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
+          <p className="text-gray-400 dark:text-gray-500 text-xs">
+            &copy; {new Date().getFullYear()} <span className="font-semibold text-pink-500 underline underline-offset-4">Mom & Baby Wear</span>. Quality guaranteed.
           </p>
-          <div className="flex items-center gap-6 text-[11px] font-bold text-gray-400 uppercase tracking-widest">
-            <Link href="/privacy" className="hover:text-pink-600 transition-colors">Privacy</Link>
-            <Link href="/terms" className="hover:text-pink-600 transition-colors">Terms</Link>
-            <span className="flex items-center gap-1">Made with <Heart size={12} className="text-pink-500 fill-pink-500" /></span>
+          
+          {/* Payment Icons (Optional but Professional) */}
+          <div className="flex gap-4 grayscale opacity-50">
+             <Image src="/bkash.png" alt="bkash" width={40} height={25} />
+             <Image src="/visa.png" alt="visa" width={40} height={25} />
+             <Image src="/mastercard.png" alt="mastercard" width={40} height={25} />
+          </div>
+
+          <div className="flex items-center gap-6 text-[10px] font-bold text-gray-400 uppercase tracking-tighter">
+            <Link href="/privacy" className="hover:text-pink-600 transition-colors">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-pink-600 transition-colors">Terms of Service</Link>
+            <span className="flex items-center gap-1">Dev with <Heart size={12} className="text-pink-500 fill-pink-500" /></span>
           </div>
         </div>
       </div>

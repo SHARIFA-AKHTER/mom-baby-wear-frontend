@@ -1,17 +1,16 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable @next/next/no-img-element */
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ReviewService } from "@/app/services/review.service"; 
-import { Check, Trash2, Loader2, Star, User, AlertCircle, MessageSquareOff } from "lucide-react";
+import {  Trash2, Loader2, Star, AlertCircle, MessageSquareOff, Quote, ShieldCheck, Timer } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
 export default function AdminReviewsPage() {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient(); 
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["admin-reviews"],
@@ -27,10 +26,10 @@ export default function AdminReviewsPage() {
     mutationFn: (id: string) => ReviewService.approve(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-reviews"] });
-      toast.success("Review approved!");
+      toast.success("Review published live!");
     },
     onError: (err: any) => {
-      toast.error(err.response?.data?.message || "Failed to approve review");
+      toast.error(err.response?.data?.message || "Failed to approve");
     }
   });
 
@@ -38,25 +37,27 @@ export default function AdminReviewsPage() {
     mutationFn: (id: string) => ReviewService.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-reviews"] });
-      toast.success("Review deleted!");
+      toast.success("Review removed.");
     },
     onError: (err: any) => {
-      toast.error(err.response?.data?.message || "Failed to delete review");
+      toast.error(err.response?.data?.message || "Failed to delete");
     }
   });
 
   if (isError) {
     const status = (error as any)?.response?.status;
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-6">
-        <AlertCircle size={48} className="text-red-500 mb-4" />
-        <h2 className="text-xl md:text-2xl font-bold text-gray-800">
-          {status === 403 ? "Access Forbidden" : "Something went wrong"}
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-6 bg-white dark:bg-gray-900 rounded-[3rem] border border-red-100 dark:border-red-900/20">
+        <div className="w-20 h-20 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-6">
+          <AlertCircle size={40} className="text-red-500" />
+        </div>
+        <h2 className="text-2xl font-black text-gray-800 dark:text-white uppercase tracking-tighter">
+          {status === 403 ? "Access Denied" : "System Error"}
         </h2>
-        <p className="text-gray-500 mt-2 max-w-md">
+        <p className="text-gray-500 dark:text-gray-400 mt-2 max-w-sm font-medium">
           {status === 403 
-            ? "You don't have permission to view this page. Please login as Admin." 
-            : "Could not fetch reviews. Check your connection."}
+            ? "You don't have administrative privileges to manage reviews." 
+            : "We couldn't synchronize with the feedback engine."}
         </p>
       </div>
     );
@@ -64,171 +65,105 @@ export default function AdminReviewsPage() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col justify-center items-center min-h-[60vh]">
-        <Loader2 className="animate-spin text-pink-600 mb-2" size={40} />
-        <p className="text-gray-500 font-medium">Loading reviews...</p>
+      <div className="flex flex-col justify-center items-center min-h-[60vh] text-gray-400">
+        <Loader2 className="animate-spin text-[#6C5DD3] mb-4" size={40} />
+        <p className="font-black tracking-widest uppercase text-[10px]">Analyzing Feedback...</p>
       </div>
     );
   }
 
   return (
-    <div className="p-4 md:p-8 max-w-7xl mx-auto bg-gray-50 min-h-screen font-sans">
-      <div className="mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
-        <div className="text-center md:text-left">
-          <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900">Review Management</h1>
-          <p className="text-sm text-gray-500 mt-1">Monitor and moderate customer feedback</p>
+    <div className="transition-colors duration-300">
+      {/* Header */}
+      <div className="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-black text-gray-800 dark:text-white uppercase tracking-tighter">
+            User <span className="text-[#6C5DD3]">Feedback</span>
+          </h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 font-medium mt-1">Moderate and curate customer testimonials</p>
         </div>
-        <div className="bg-white px-4 py-2 rounded-xl shadow-sm border border-gray-200 text-sm font-bold text-pink-600">
-          Total Reviews: {reviews.length}
+        <div className="bg-[#6C5DD3] text-white px-6 py-3 rounded-2xl shadow-xl shadow-purple-200 dark:shadow-none flex items-center gap-3">
+          <Quote size={18} className="opacity-70" />
+          <span className="text-xs font-black uppercase tracking-widest">Total: {reviews.length}</span>
         </div>
       </div>
 
       {reviews.length === 0 ? (
-        <div className="bg-white p-20 text-center rounded-3xl border-2 border-dashed border-gray-200">
-          <MessageSquareOff className="mx-auto text-gray-200 mb-4" size={60} />
-          <p className="text-gray-400 font-medium">No reviews available to show.</p>
+        <div className="bg-white dark:bg-gray-900 p-32 text-center rounded-[3rem] border-2 border-dashed border-gray-100 dark:border-gray-800">
+          <MessageSquareOff className="mx-auto text-gray-200 dark:text-gray-700 mb-6" size={60} />
+          <h3 className="text-gray-400 font-black uppercase tracking-widest text-sm">Silence is golden</h3>
+          <p className="text-gray-300 dark:text-gray-600 text-xs mt-2">No customer reviews found in the database.</p>
         </div>
       ) : (
-        <>
-          {/* Desktop Table View */}
-          <div className="hidden lg:block bg-white border border-gray-100 rounded-[24px] shadow-sm overflow-hidden">
-            <table className="w-full text-left border-collapse">
-              <thead className="bg-gray-50 border-b border-gray-100 text-xs uppercase font-bold text-gray-500">
-                <tr>
-                  <th className="p-4">Customer</th>
-                  <th className="p-4">Product Info</th>
-                  <th className="p-4">Rating & Comment</th>
-                  <th className="p-4">Status</th>
-                  <th className="p-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50 text-sm">
-                {reviews.map((review: any) => (
-                  <tr key={review.id} className="hover:bg-gray-50/50 transition">
-                    <td className="p-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-pink-50 rounded-full flex items-center justify-center text-pink-600 font-bold border border-pink-100">
-                           {review.user?.name?.charAt(0) || <User size={16} />}
-                        </div>
-                        <div>
-                          <p className="font-bold text-gray-800">{review.user?.name || "Anonymous"}</p>
-                          <p className="text-[10px] text-gray-400 truncate max-w-[120px]">{review.user?.email}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <div className="flex items-center gap-2">
-                        <img 
-                          src={review.product?.images?.[0] || "/placeholder.jpg"} 
-                          alt="product" 
-                          className="w-10 h-10 rounded-lg object-cover border border-gray-100"
-                        />
-                        <span className="text-xs font-semibold text-gray-700 line-clamp-1 max-w-[150px]">
-                          {review.product?.title || "Unknown Product"}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <div className="flex text-yellow-400 mb-1">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} size={12} fill={i < review.rating ? "currentColor" : "none"} className={i < review.rating ? "text-yellow-400" : "text-gray-200"} />
-                        ))}
-                      </div>
-                      <p className="text-xs text-gray-600 italic line-clamp-2 leading-relaxed">"{review.comment}"</p>
-                      <p className="text-[10px] text-gray-400 mt-1 font-medium">{format(new Date(review.createdAt), "MMM dd, yyyy")}</p>
-                    </td>
-                    <td className="p-4">
-                      <span className={`px-3 py-1 rounded-full text-[10px] font-bold border ${
-                        review.approved ? 'bg-green-50 text-green-600 border-green-100' : 'bg-amber-50 text-amber-600 border-amber-100'
-                      }`}>
-                        {review.approved ? 'LIVE' : 'PENDING'}
-                      </span>
-                    </td>
-                    <td className="p-4 text-right">
-                      <div className="flex justify-end gap-2">
-                        {!review.approved && (
-                          <button
-                            onClick={() => approveMutation.mutate(review.id)}
-                            className="p-2 bg-green-50 text-green-600 rounded-xl hover:bg-green-600 hover:text-white transition shadow-sm"
-                            title="Approve Review"
-                          >
-                            <Check size={16} />
-                          </button>
-                        )}
-                        <button
-                          onClick={() => window.confirm("Are you sure to delete this review?") && deleteMutation.mutate(review.id)}
-                          className="p-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition shadow-sm"
-                          title="Delete Review"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          {reviews.map((review: any) => (
+            <div key={review.id} className="bg-white dark:bg-gray-900 rounded-[2.5rem] border border-gray-50 dark:border-gray-800 p-6 md:p-8 shadow-sm hover:shadow-xl hover:shadow-purple-500/5 transition-all group relative overflow-hidden">
+              
+              {/* Status Ribbon */}
+              <div className={`absolute top-0 right-0 px-6 py-1 rounded-bl-2xl text-[9px] font-black uppercase tracking-widest ${
+                review.approved ? 'bg-green-500 text-white' : 'bg-amber-500 text-white'
+              }`}>
+                {review.approved ? 'Public' : 'Awaiting'}
+              </div>
 
-          {/* Mobile Card View */}
-          <div className="lg:hidden space-y-4">
-            {reviews.map((review: any) => (
-              <div key={review.id} className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm space-y-4">
-                <div className="flex justify-between items-start">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center text-pink-600 font-bold uppercase border border-pink-200">
-                      {review.user?.name?.charAt(0) || 'U'}
-                    </div>
-                    <div>
-                      <p className="font-bold text-gray-900 leading-none">{review.user?.name || "Anonymous"}</p>
-                      <p className="text-[10px] text-gray-400 mt-1">{format(new Date(review.createdAt), "MMM dd, yyyy")}</p>
+              <div className="flex flex-col sm:flex-row gap-6">
+                {/* Left: Product & User Info */}
+                <div className="shrink-0 space-y-4">
+                  <div className="relative w-20 h-20 mx-auto sm:mx-0">
+                    <img 
+                      src={review.product?.images?.[0] || "/placeholder.jpg"} 
+                      className="w-full h-full rounded-2xl object-cover border-2 border-gray-50 dark:border-gray-800 group-hover:border-[#6C5DD3] transition-colors" 
+                      alt="" 
+                    />
+                    <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center shadow-lg text-[#6C5DD3] border border-gray-100 dark:border-gray-700 font-black text-xs">
+                      {review.rating}<Star size={10} fill="currentColor" className="ml-0.5" />
                     </div>
                   </div>
-                  <span className={`px-2 py-1 rounded-md text-[10px] font-black border ${
-                    review.approved ? 'bg-green-50 text-green-700 border-green-100' : 'bg-amber-50 text-amber-700 border-amber-100'
-                  }`}>
-                    {review.approved ? 'LIVE' : 'PENDING'}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-3 bg-gray-50 p-2.5 rounded-xl border border-gray-100">
-                  <img src={review.product?.images?.[0] || "/placeholder.jpg"} className="w-12 h-12 rounded-lg object-cover border" alt="" />
-                  <p className="text-xs font-bold text-gray-700 line-clamp-1">{review.product?.title}</p>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex text-yellow-400">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} size={14} fill={i < review.rating ? "currentColor" : "none"} className={i < review.rating ? "text-yellow-400" : "text-gray-200"} />
-                    ))}
+                  <div className="text-center sm:text-left">
+                    <p className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Customer</p>
+                    <p className="text-sm font-black text-gray-800 dark:text-gray-100 truncate max-w-30">{review.user?.name || "Guest"}</p>
                   </div>
-                  <p className="text-sm text-gray-600 italic bg-gray-50/50 p-3 rounded-lg border border-gray-50">"{review.comment}"</p>
                 </div>
 
-                <div className="flex gap-2 pt-2">
-                  {!review.approved && (
+                {/* Right: Content */}
+                <div className="grow flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                       <Timer size={12} className="text-[#6C5DD3]" />
+                       <p className="text-[10px] font-bold text-gray-400">{format(new Date(review.createdAt), "MMMM dd, yyyy")}</p>
+                    </div>
+                    <h4 className="text-xs font-black text-[#6C5DD3] uppercase mb-3 line-clamp-1">{review.product?.title}</h4>
+                    <div className="relative">
+                      <Quote size={24} className="absolute -top-2 -left-3 text-gray-100 dark:text-gray-800 z-0" />
+                      <p className="text-sm text-gray-600 dark:text-gray-400 italic leading-relaxed relative z-10">"{review.comment}"</p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3 mt-6">
+                    {!review.approved && (
+                      <button
+                        onClick={() => approveMutation.mutate(review.id)}
+                        disabled={approveMutation.isPending}
+                        className="flex-1 bg-green-500 hover:bg-green-600 text-white py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-green-100 dark:shadow-none transition-all active:scale-95"
+                      >
+                        {approveMutation.isPending ? <Loader2 size={14} className="animate-spin" /> : <ShieldCheck size={14} />} 
+                        Publish
+                      </button>
+                    )}
                     <button
-                      disabled={approveMutation.isPending}
-                      onClick={() => approveMutation.mutate(review.id)}
-                      className="flex-1 bg-green-600 text-white py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 active:scale-95 transition-all"
+                      onClick={() => window.confirm("Permanently delete this feedback?") && deleteMutation.mutate(review.id)}
+                      disabled={deleteMutation.isPending}
+                      className="flex-1 bg-red-50 dark:bg-red-900/10 text-red-500 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-red-500 hover:text-white transition-all active:scale-95"
                     >
-                      {approveMutation.isPending ? <Loader2 className="animate-spin" size={16} /> : <Check size={16} />} 
-                      Approve
+                      {deleteMutation.isPending ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
+                      Discard
                     </button>
-                  )}
-                  <button
-                    disabled={deleteMutation.isPending}
-                    onClick={() => window.confirm("Delete?") && deleteMutation.mutate(review.id)}
-                    className="flex-1 bg-red-50 text-red-600 py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 border border-red-100 active:scale-95 transition-all"
-                  >
-                    {deleteMutation.isPending ? <Loader2 className="animate-spin" size={16} /> : <Trash2 size={16} />}
-                    Delete
-                  </button>
+                  </div>
                 </div>
               </div>
-            ))}
-          </div>
-        </>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

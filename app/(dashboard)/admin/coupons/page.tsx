@@ -1,129 +1,5 @@
-// /* eslint-disable @typescript-eslint/no-unused-vars */
-//  "use client";
-
-// import { useEffect, useState } from "react";
-// import { CouponService } from "@/app/services/coupon.service";
-// import { 
-//   Ticket, Plus, Trash2, Calendar, CheckCircle2, 
-//   XCircle, Loader2, BadgePercent, CircleDollarSign, X 
-// } from "lucide-react";
-// import CreateCouponModal from "./components/CreateCouponModal";
-
-// interface Coupon {
-//   id: string;
-//   code: string;
-//   discountType: "PERCENT" | "FLAT";
-//   discountValue: number;
-//   expiry: string;
-//   minOrderValue?: number;
-//   isActive: boolean;
-// }
-
-// export default function CouponPage() {
-//   const [coupons, setCoupons] = useState<Coupon[]>([]);
-//   const [loading, setLoading] = useState(true);
-//   const [isModalOpen, setIsModalOpen] = useState(false);
-
-//   useEffect(() => {
-//     fetchCoupons();
-//   }, []);
-
-//   const fetchCoupons = async () => {
-//     try {
-//       setLoading(true);
-//       const data = await CouponService.getAll();
-//       setCoupons(data);
-//     } catch (err) {
-//       console.error("Failed to fetch coupons", err);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const handleDelete = async (id: string) => {
-//     if (!confirm("Are you sure?")) return;
-//     try {
-//       await CouponService.delete(id);
-//       setCoupons((prev) => prev.filter((c) => c.id !== id));
-//     } catch (err) {
-//       alert("Failed to delete");
-//     }
-//   };
-
-//   return (
-//     <div className="container mx-auto px-4 py-8 max-w-6xl relative">
-//       {/* Header */}
-//       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
-//         <div>
-//           <h1 className="text-3xl font-black text-gray-900 flex items-center gap-3">
-//             <Ticket className="text-pink-600" size={32} /> Coupons
-//           </h1>
-//           <p className="text-gray-500 text-sm">Create and manage your promo codes</p>
-//         </div>
-//         <button 
-//           onClick={() => setIsModalOpen(true)}
-//           className="w-full sm:w-auto bg-pink-600 hover:bg-pink-700 text-white px-6 py-3 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-pink-100"
-//         >
-//           <Plus size={20} /> New Coupon
-//         </button>
-//       </div>
-
-//       {/* Coupon Grid */}
-//       {loading ? (
-//         <div className="flex flex-col items-center justify-center py-20">
-//           <Loader2 className="animate-spin text-pink-600 mb-2" size={40} />
-//           <p className="text-gray-400 font-medium">Loading coupons...</p>
-//         </div>
-//       ) : (
-//         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-//           {coupons.map((coupon) => (
-//             <div key={coupon.id} className="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all relative group">
-//               <div className="absolute top-4 right-4">
-//                 {coupon.isActive ? <CheckCircle2 className="text-green-500" size={20} /> : <XCircle className="text-red-400" size={20} />}
-//               </div>
-              
-//               <div className="flex items-center gap-4 mb-4">
-//                 <div className="w-12 h-12 bg-pink-50 rounded-2xl flex items-center justify-center text-pink-600">
-//                   {coupon.discountType === "PERCENT" ? <BadgePercent size={24} /> : <CircleDollarSign size={24} />}
-//                 </div>
-//                 <div>
-//                   <h3 className="text-xl font-black text-gray-800 uppercase tracking-tighter">{coupon.code}</h3>
-//                   <p className="text-xs font-bold text-pink-500 uppercase">
-//                     {coupon.discountType === "PERCENT" ? `${coupon.discountValue}% OFF` : `৳${coupon.discountValue} FLAT`}
-//                   </p>
-//                 </div>
-//               </div>
-
-//               <div className="space-y-2 py-4 border-t border-dashed border-gray-100">
-//                 <div className="flex justify-between text-xs">
-//                   <span className="text-gray-400">Min. Purchase:</span>
-//                   <span className="font-bold">৳{coupon.minOrderValue || 0}</span>
-//                 </div>
-//                 <div className="flex justify-between text-xs">
-//                   <span className="text-gray-400">Expires:</span>
-//                   <span className="font-bold text-gray-600">{new Date(coupon.expiry).toLocaleDateString()}</span>
-//                 </div>
-//               </div>
-
-//               <button onClick={() => handleDelete(coupon.id)} className="mt-4 w-full py-2 bg-red-50 text-red-500 rounded-xl text-xs font-bold hover:bg-red-100 transition flex items-center justify-center gap-2">
-//                 <Trash2 size={14} /> Remove
-//               </button>
-//             </div>
-//           ))}
-//         </div>
-//       )}
-
-//       {/* Modal Overlay */}
-//       {isModalOpen && (
-//         <CreateCouponModal 
-//           onClose={() => setIsModalOpen(false)} 
-//           onRefresh={() => { fetchCoupons(); setIsModalOpen(false); }} 
-//         />
-//       )}
-//     </div>
-//   );
-// }                    
-
+/* eslint-disable @typescript-eslint/no-unused-vars */
+                 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -131,7 +7,7 @@ import { useEffect, useState } from "react";
 import { CouponService } from "@/app/services/coupon.service";
 import { 
   Ticket, Plus, Trash2, CheckCircle2, 
-  XCircle, Loader2, BadgePercent, CircleDollarSign, Package 
+  XCircle, Loader2, BadgePercent, CircleDollarSign,  Calendar, Info
 } from "lucide-react";
 import CreateCouponModal from "./components/CreateCouponModal";
 
@@ -146,7 +22,6 @@ interface Coupon {
 }
 
 export default function CouponPage() {
-
   const [couponsData, setCouponsData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -159,7 +34,6 @@ export default function CouponPage() {
     try {
       setLoading(true);
       const res = await CouponService.getAll();
-     
       setCouponsData(res?.data?.data || res?.data || res);
     } catch (err) {
       console.error("Failed to fetch coupons", err);
@@ -167,7 +41,6 @@ export default function CouponPage() {
       setLoading(false);
     }
   };
-
 
   const couponList: Coupon[] = Array.isArray(couponsData) 
     ? couponsData 
@@ -177,99 +50,109 @@ export default function CouponPage() {
     if (!confirm("Are you sure you want to delete this coupon?")) return;
     try {
       await CouponService.delete(id);
-    
       const updatedList = couponList.filter((c) => c.id !== id);
-      if (Array.isArray(couponsData)) {
-        setCouponsData(updatedList);
-      } else {
-        setCouponsData({ ...couponsData, result: updatedList });
-      }
+      setCouponsData(Array.isArray(couponsData) ? updatedList : { ...couponsData, result: updatedList });
     } catch (err) {
       alert("Failed to delete");
     }
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl relative">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
+    <div className="transition-colors duration-300">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
         <div>
-          <h1 className="text-3xl font-black text-gray-900 flex items-center gap-3">
-            <Ticket className="text-pink-600" size={32} /> Coupons
+          <h1 className="text-2xl md:text-3xl font-black text-gray-800 dark:text-white uppercase tracking-tighter flex items-center gap-3">
+            Promo <span className="text-[#6C5DD3]">Codes</span>
           </h1>
-          <p className="text-gray-500 text-sm">Create and manage your promo codes</p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1 font-medium">Create discounts to boost your shop sales</p>
         </div>
         <button 
           onClick={() => setIsModalOpen(true)}
-          className="w-full sm:w-auto bg-pink-600 hover:bg-pink-700 text-white px-6 py-3 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-pink-100"
+          className="flex items-center justify-center gap-2 bg-[#6C5DD3] hover:bg-[#5a4cb3] text-white px-8 py-4 rounded-[1.5rem] font-black uppercase text-xs tracking-widest shadow-xl shadow-purple-200 dark:shadow-none transition-all active:scale-95 w-full md:w-auto"
         >
-          <Plus size={20} /> New Coupon
+          <Plus size={18} /> Add New Coupon
         </button>
       </div>
 
-      {/* Loading State */}
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-20">
-          <Loader2 className="animate-spin text-pink-600 mb-2" size={40} />
-          <p className="text-gray-400 font-medium">Loading coupons...</p>
+        <div className="flex flex-col items-center justify-center py-32 text-gray-400">
+          <Loader2 className="animate-spin text-[#6C5DD3] mb-4" size={40} />
+          <p className="font-bold tracking-widest uppercase text-[10px]">Loading Rewards...</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {couponList.map((coupon) => (
-            <div key={coupon.id} className="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all relative group overflow-hidden">
-              {/* Active/Inactive Status indicator */}
-              <div className={`absolute top-0 right-0 h-1 w-full ${coupon.isActive ? 'bg-green-500' : 'bg-red-400'}`} />
+            <div key={coupon.id} className="bg-white dark:bg-gray-900 rounded-[2.5rem] border border-gray-50 dark:border-gray-800 p-7 shadow-sm hover:shadow-2xl hover:shadow-purple-500/10 transition-all relative overflow-hidden group">
               
-              <div className="absolute top-4 right-4">
-                {coupon.isActive ? 
-                  <CheckCircle2 className="text-green-500" size={20} /> : 
-                  <XCircle className="text-red-400" size={20} />
-                }
-              </div>
-              
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 bg-pink-50 rounded-2xl flex items-center justify-center text-pink-600">
-                  {coupon.discountType === "PERCENT" ? <BadgePercent size={24} /> : <CircleDollarSign size={24} />}
+              {/* Status Indicator Bar */}
+              <div className={`absolute top-0 left-0 w-full h-1.5 ${coupon.isActive ? 'bg-green-500' : 'bg-red-500'}`} />
+
+              <div className="flex justify-between items-start mb-6">
+                <div className="w-14 h-14 bg-purple-50 dark:bg-purple-900/20 rounded-2xl flex items-center justify-center text-[#6C5DD3]">
+                  {coupon.discountType === "PERCENT" ? <BadgePercent size={28} /> : <CircleDollarSign size={28} />}
                 </div>
-                <div>
-                  <h3 className="text-xl font-black text-gray-800 uppercase tracking-tighter">{coupon.code}</h3>
-                  <p className="text-xs font-bold text-pink-500 uppercase">
-                    {coupon.discountType === "PERCENT" ? `${coupon.discountValue}% OFF` : `৳${coupon.discountValue} FLAT`}
-                  </p>
+                <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[10px] font-black uppercase tracking-tighter ${
+                  coupon.isActive 
+                  ? 'bg-green-50 text-green-600 border-green-100 dark:bg-green-900/20 dark:border-green-800' 
+                  : 'bg-red-50 text-red-600 border-red-100 dark:bg-red-900/20 dark:border-red-800'
+                }`}>
+                  {coupon.isActive ? <CheckCircle2 size={12} /> : <XCircle size={12} />}
+                  {coupon.isActive ? "Live" : "Inactive"}
                 </div>
               </div>
 
-              <div className="space-y-2 py-4 border-t border-dashed border-gray-100">
-                <div className="flex justify-between text-xs">
-                  <span className="text-gray-400">Min. Purchase:</span>
-                  <span className="font-bold font-mono">৳{coupon.minOrderValue || 0}</span>
+              <div className="mb-6">
+                <h3 className="text-2xl font-black text-gray-800 dark:text-white uppercase tracking-tight group-hover:text-[#6C5DD3] transition-colors">
+                  {coupon.code}
+                </h3>
+                <p className="text-sm font-bold text-gray-400 dark:text-gray-500 mt-1">
+                  Save <span className="text-[#6C5DD3] dark:text-purple-400">
+                    {coupon.discountType === "PERCENT" ? `${coupon.discountValue}%` : `৳${coupon.discountValue}`}
+                  </span> on every order
+                </p>
+              </div>
+
+              <div className="space-y-3 py-5 border-t border-dashed border-gray-100 dark:border-gray-800">
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] font-black text-gray-400 uppercase flex items-center gap-1.5">
+                    <Info size={12} /> Min. Purchase
+                  </span>
+                  <span className="text-sm font-black text-gray-800 dark:text-gray-200">৳{coupon.minOrderValue || 0}</span>
                 </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-gray-400">Expires:</span>
-                  <span className="font-bold text-gray-600">{new Date(coupon.expiry).toLocaleDateString()}</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] font-black text-gray-400 uppercase flex items-center gap-1.5">
+                    <Calendar size={12} /> Valid Until
+                  </span>
+                  <span className="text-sm font-bold text-gray-600 dark:text-gray-400">
+                    {new Date(coupon.expiry).toLocaleDateString("en-GB", { day: '2-digit', month: 'short', year: 'numeric' })}
+                  </span>
                 </div>
               </div>
 
               <button 
                 onClick={() => handleDelete(coupon.id)} 
-                className="mt-4 w-full py-2 bg-red-50 text-red-500 rounded-xl text-xs font-bold hover:bg-red-100 transition flex items-center justify-center gap-2"
+                className="mt-2 w-full py-3.5 bg-red-50 dark:bg-red-900/10 text-red-500 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all flex items-center justify-center gap-2 group/btn"
               >
-                <Trash2 size={14} /> Remove Coupon
+                <Trash2 size={14} className="group-hover/btn:rotate-12 transition-transform" /> Remove Coupon
               </button>
             </div>
           ))}
 
           {/* Empty State */}
           {!loading && couponList.length === 0 && (
-            <div className="col-span-full text-center py-20 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
-              <Package className="mx-auto text-gray-300 mb-4" size={48} />
-              <p className="text-gray-500">No coupons found. Create your first promo code!</p>
+            <div className="col-span-full text-center py-28 bg-white dark:bg-gray-900 rounded-[3rem] border-2 border-dashed border-gray-100 dark:border-gray-800">
+              <div className="w-20 h-20 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Ticket className="text-gray-300 dark:text-gray-600" size={40} />
+              </div>
+              <h3 className="text-gray-800 dark:text-gray-100 font-black text-xl">No active coupons</h3>
+              <p className="text-gray-400 dark:text-gray-500 text-sm mt-2 max-w-xs mx-auto">Boost your sales by creating your first promotional discount code today.</p>
             </div>
           )}
         </div>
       )}
 
-      {/* Modal Overlay */}
+      {/* Create Coupon Modal */}
       {isModalOpen && (
         <CreateCouponModal 
           onClose={() => setIsModalOpen(false)} 

@@ -5,7 +5,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { InventoryService } from "@/app/services/inventory.service";
-import { Loader2, AlertTriangle, Edit3, Package, Save, X, Search, Boxes } from "lucide-react";
+import { Loader2, AlertTriangle, Edit3, Package, Save, X, Search, Boxes, TrendingDown, ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -15,11 +15,10 @@ export default function AdminInventoryPage() {
   const [newQuantity, setNewQuantity] = useState<number>(0);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["admin-inventory"],
     queryFn: () => InventoryService.getAll(),
   });
-
 
   const rawData = data?.data || data;
   const inventoryData: any[] = Array.isArray(rawData) ? rawData : rawData?.result || [];
@@ -43,129 +42,136 @@ export default function AdminInventoryPage() {
   });
 
   if (isLoading) return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh]">
-      <Loader2 className="animate-spin text-pink-600" size={40} />
-      <p className="mt-2 text-gray-500 font-medium">Loading inventory records...</p>
+    <div className="flex flex-col items-center justify-center min-h-[60vh] text-gray-400">
+      <Loader2 className="animate-spin text-[#6C5DD3] mb-4" size={40} />
+      <p className="font-black tracking-widest uppercase text-xs">Auditing Stock...</p>
     </div>
   );
 
   return (
-    <div className="p-4 md:p-8 max-w-7xl mx-auto bg-gray-50/30 min-h-screen">
+    <div className="transition-colors duration-300">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
         <div>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900">Inventory Management</h1>
-          <p className="text-sm text-gray-500 mt-1">Track and manage your product stock levels</p>
+          <h1 className="text-2xl md:text-3xl font-black text-gray-800 dark:text-white uppercase tracking-tighter">
+            Stock <span className="text-[#6C5DD3]">Control</span>
+          </h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 font-medium mt-1">Real-time product availability tracking</p>
         </div>
         
-        <div className="flex items-center gap-3">
-            <div className="relative group">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-pink-500 transition-colors" size={18} />
-                <input 
-                    type="text" 
-                    placeholder="Search by name or SKU..."
-                    className="pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all w-full md:w-64 shadow-sm"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-            </div>
-            <div className="bg-white border border-gray-100 p-2.5 rounded-xl flex items-center gap-3 shadow-sm px-4">
-                <Package className="text-pink-600" size={20} />
-                <div className="leading-tight">
-                    <p className="text-[10px] text-gray-400 uppercase font-black">Total Items</p>
-                    <p className="text-lg font-black text-gray-800">{inventoryData.length}</p>
-                </div>
-            </div>
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <input 
+              type="text" 
+              placeholder="Search SKU or Name..." 
+              className="pl-10 pr-4 py-2.5 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all dark:text-gray-200 w-full md:w-64"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <div className="bg-[#6C5DD3] text-white px-6 py-2.5 rounded-2xl flex items-center gap-3 shadow-xl shadow-purple-200 dark:shadow-none">
+             <Package size={20} />
+             <div className="leading-tight border-l border-white/20 pl-3">
+                <p className="text-[10px] font-black uppercase opacity-70">Inventory</p>
+                <p className="text-lg font-black">{inventoryData.length}</p>
+             </div>
+          </div>
         </div>
       </div>
 
-      {/* Table Section */}
-      <div className="bg-white border border-gray-100 rounded-[24px] shadow-sm overflow-hidden">
+      {/* Main Table Card */}
+      <div className="bg-white dark:bg-gray-900 rounded-[2.5rem] border border-gray-50 dark:border-gray-800 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead className="bg-gray-50/50 border-b border-gray-100 text-xs uppercase font-bold text-gray-500">
-              <tr>
-                <th className="p-4">Product Info</th>
-                <th className="p-4">SKU</th>
-                <th className="p-4">Current Stock</th>
-                <th className="p-4">Status</th>
-                <th className="p-4 text-right">Action</th>
+          <table className="w-full text-left">
+            <thead className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800">
+              <tr className="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+                <th className="p-6">Product Details</th>
+                <th className="p-6">SKU ID</th>
+                <th className="p-6 text-center">Stock Level</th>
+                <th className="p-6">Availability</th>
+                <th className="p-6 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50 text-sm">
+            <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
               {filteredData.map((item: any) => (
-                <tr key={item.id} className="hover:bg-gray-50/30 transition-colors group">
-                  <td className="p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="relative">
+                <tr key={item.id} className="hover:bg-purple-50/30 dark:hover:bg-purple-900/5 transition-colors group">
+                  <td className="p-6">
+                    <div className="flex items-center gap-4">
+                      <div className="relative flex-shrink-0">
                         <img 
-                            src={item.product?.images?.[0] || "/placeholder.jpg"} 
-                            className="w-12 h-12 rounded-xl object-cover border border-gray-100 shadow-sm" 
-                            alt="" 
+                          src={item.product?.images?.[0] || "/placeholder.jpg"} 
+                          className={`w-14 h-14 rounded-2xl object-cover border-2 transition-all ${item.quantity === 0 ? 'grayscale border-red-200' : 'border-gray-100 dark:border-gray-800'}`} 
+                          alt="" 
                         />
                         {item.quantity === 0 && (
-                             <div className="absolute inset-0 bg-black/40 rounded-xl flex items-center justify-center">
-                                <span className="text-[8px] text-white font-bold uppercase">Out</span>
-                             </div>
+                          <div className="absolute inset-0 bg-red-600/20 rounded-2xl flex items-center justify-center backdrop-blur-[1px]">
+                            <span className="text-[9px] text-white font-black uppercase tracking-tighter bg-red-600 px-1.5 rounded">Empty</span>
+                          </div>
                         )}
                       </div>
-                      <div>
-                        <p className="font-bold text-gray-800 line-clamp-1 group-hover:text-pink-600 transition-colors">{item.product?.title}</p>
-                        <p className="text-[10px] text-gray-400 font-medium">Price: ৳{item.product?.price?.toLocaleString()}</p>
+                      <div className="max-w-[200px]">
+                        <p className="font-black text-gray-800 dark:text-gray-200 line-clamp-1 group-hover:text-[#6C5DD3] transition-colors uppercase tracking-tight">{item.product?.title}</p>
+                        <p className="text-[10px] text-gray-400 font-bold uppercase mt-1 tracking-tighter">৳{item.product?.price?.toLocaleString()}</p>
                       </div>
                     </div>
                   </td>
-                  <td className="p-4">
-                    <span className="px-2 py-1 bg-gray-100 text-gray-500 rounded-md font-mono text-[10px] font-bold">
-                        {item.product?.sku || "NO-SKU"}
+                  <td className="p-6">
+                    <span className="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-xl font-mono text-[10px] font-black border dark:border-gray-700">
+                        {item.product?.sku || "N/A"}
                     </span>
                   </td>
-                  <td className="p-4">
+                  <td className="p-6 text-center">
                     {editingId === item.productId ? (
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center justify-center gap-2">
                           <input
                             type="number"
-                            className="w-20 p-2 border-2 border-pink-500 rounded-lg outline-none font-bold text-gray-800 shadow-inner"
+                            className="w-20 p-2.5 bg-white dark:bg-gray-800 border-2 border-[#6C5DD3] rounded-xl outline-none font-black text-gray-800 dark:text-white text-center shadow-lg"
                             value={newQuantity}
                             onChange={(e) => setNewQuantity(Math.max(0, parseInt(e.target.value) || 0))}
                             autoFocus
                           />
                       </div>
                     ) : (
-                      <span className={`text-base font-black ${item.quantity <= 5 ? 'text-red-600' : 'text-gray-700'}`}>
-                        {item.quantity}
-                      </span>
+                      <div className="flex flex-col items-center">
+                        <span className={`text-xl font-black ${item.quantity <= 5 ? 'text-red-600 animate-pulse' : 'text-gray-800 dark:text-gray-200'}`}>
+                          {item.quantity}
+                        </span>
+                        <div className="w-12 h-1 bg-gray-100 dark:bg-gray-800 rounded-full mt-1 overflow-hidden">
+                           <div 
+                            className={`h-full ${item.quantity <= 5 ? 'bg-red-500' : 'bg-green-500'}`} 
+                            style={{ width: `${Math.min(item.quantity * 10, 100)}%` }}
+                           />
+                        </div>
+                      </div>
                     )}
                   </td>
-                  <td className="p-4">
+                  <td className="p-6">
                     {item.quantity <= 5 ? (
-                      <div className="flex items-center gap-1.5 text-red-600 bg-red-50 px-2.5 py-1 rounded-full w-fit border border-red-100 animate-pulse">
-                        <AlertTriangle size={12} />
-                        <span className="text-[10px] font-black uppercase tracking-wider">Low Stock</span>
+                      <div className="flex items-center gap-1.5 text-red-600 bg-red-50 dark:bg-red-900/20 px-3 py-1.5 rounded-xl w-fit border border-red-100 dark:border-red-900/30">
+                        <AlertTriangle size={14} />
+                        <span className="text-[10px] font-black uppercase tracking-widest">Restock</span>
                       </div>
                     ) : (
-                      <div className="text-green-600 bg-green-50 px-2.5 py-1 rounded-full w-fit text-[10px] font-black uppercase tracking-wider border border-green-100">
-                        Healthy
+                      <div className="text-green-600 bg-green-50 dark:bg-green-900/20 px-3 py-1.5 rounded-xl w-fit text-[10px] font-black uppercase tracking-widest border border-green-100 dark:border-green-900/30">
+                        Available
                       </div>
                     )}
                   </td>
-                  <td className="p-4 text-right">
+                  <td className="p-6 text-right">
                     {editingId === item.productId ? (
                       <div className="flex justify-end gap-2">
                         <button 
                           onClick={() => updateMutation.mutate({ productId: item.productId, quantity: newQuantity })}
-                          disabled={updateMutation.isPending}
-                          className="p-2 bg-green-600 text-white rounded-xl hover:bg-green-700 shadow-sm active:scale-95 transition-all"
-                          title="Save"
+                          className="p-3 bg-green-600 text-white rounded-2xl hover:bg-green-700 active:scale-90 transition-all shadow-lg shadow-green-100 dark:shadow-none"
                         >
-                          {updateMutation.isPending ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+                          {updateMutation.isPending ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
                         </button>
                         <button 
                           onClick={() => setEditingId(null)}
-                          className="p-2 bg-gray-100 text-gray-500 rounded-xl hover:bg-gray-200 active:scale-95 transition-all"
-                          title="Cancel"
+                          className="p-3 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-700 active:scale-90 transition-all"
                         >
-                          <X size={16} />
+                          <X size={18} />
                         </button>
                       </div>
                     ) : (
@@ -174,9 +180,9 @@ export default function AdminInventoryPage() {
                           setEditingId(item.productId);
                           setNewQuantity(item.quantity);
                         }}
-                        className="p-2.5 bg-pink-50 text-pink-600 rounded-xl hover:bg-pink-600 hover:text-white transition-all shadow-sm group-hover:shadow-pink-100"
+                        className="p-3 bg-purple-50 dark:bg-purple-900/20 text-[#6C5DD3] rounded-2xl hover:bg-[#6C5DD3] hover:text-white transition-all active:scale-95 group/btn"
                       >
-                        <Edit3 size={16} />
+                        <Edit3 size={18} className="group-hover/btn:rotate-12 transition-transform" />
                       </button>
                     )}
                   </td>
@@ -188,9 +194,12 @@ export default function AdminInventoryPage() {
         
         {/* Empty State */}
         {filteredData.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-20 text-gray-400">
-                <Boxes size={48} className="mb-4 text-gray-200" />
-                <p className="font-medium">No inventory records found</p>
+            <div className="flex flex-col items-center justify-center py-32 text-gray-400 dark:bg-gray-900">
+                <div className="w-20 h-20 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center mb-6">
+                  <Boxes size={40} className="text-gray-300 dark:text-gray-600" />
+                </div>
+                <h3 className="text-gray-800 dark:text-gray-200 font-black text-xl">Inventory Empty</h3>
+                <p className="text-sm font-medium mt-2">No stock records found for your search.</p>
             </div>
         )}
       </div>

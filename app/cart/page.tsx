@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable react/no-unescaped-entities */
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -53,20 +52,21 @@ export default function CartPage() {
   const total = subtotal + deliveryCharge;
 
   if (!isMounted) {
-    return <div className="min-h-screen bg-white" />;
+    return <div className="min-h-screen bg-white dark:bg-gray-950" />;
   }
 
+  // Empty Cart State
   if (cartItems.length === 0) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gray-50">
-        <div className="bg-white p-10 rounded-3xl shadow-sm text-center border border-gray-100">
-          <ShoppingBag size={80} className="mx-auto text-pink-200 mb-4" />
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Your cart is empty</h2>
-          <p className="text-gray-500 mb-8">Looks like you haven't added anything yet.</p>
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gray-50 dark:bg-gray-950 transition-colors">
+        <div className="bg-white dark:bg-gray-900 p-10 rounded-3xl shadow-sm text-center border border-gray-100 dark:border-gray-800">
+          <ShoppingBag size={80} className="mx-auto text-pink-200 dark:text-pink-900/30 mb-4" />
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">Your cart is empty</h2>
+          <p className="text-gray-500 dark:text-gray-400 mb-8">Looks like you haven't added anything yet.</p>
           <Link
             href="/"
             className="bg-pink-600 text-white px-8 py-3 rounded-full font-bold hover:bg-pink-700 
-            transition flex items-center gap-2 mx-auto w-fit"
+            transition flex items-center gap-2 mx-auto w-fit shadow-lg shadow-pink-200 dark:shadow-none"
           >
             <ArrowLeft size={20} /> Start Shopping
           </Link>
@@ -76,11 +76,11 @@ export default function CartPage() {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen py-8 md:py-16">
+    <div className="bg-gray-50 dark:bg-gray-950 min-h-screen py-8 md:py-16 transition-colors duration-300">
       <div className="max-w-5xl mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-extrabold text-gray-900">Shopping Cart</h1>
-          <span className="text-gray-500 font-medium">{cartItems.length} Items</span>
+          <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">Shopping Cart</h1>
+          <span className="text-gray-500 dark:text-gray-400 font-medium">{cartItems.length} Items</span>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
@@ -89,9 +89,9 @@ export default function CartPage() {
             {cartItems.map((item) => (
               <div
                 key={item.id}
-                className="flex items-center gap-4 p-5 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition"
+                className="flex items-center gap-4 p-5 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl shadow-sm hover:shadow-md transition"
               >
-                <div className="relative w-24 h-24 shrink-0 rounded-lg overflow-hidden border border-gray-50">
+                <div className="relative w-24 h-24 shrink-0 rounded-lg overflow-hidden border border-gray-50 dark:border-gray-800">
                   <Image
                     src={item.image || "/placeholder.jpg"}
                     alt={item.title}
@@ -102,26 +102,27 @@ export default function CartPage() {
                 
                 <div className="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
-                    <h3 className="font-bold text-gray-800 text-lg line-clamp-1">
+                    <h3 className="font-bold text-gray-800 dark:text-gray-200 text-lg line-clamp-1">
                       {item.title}
                     </h3>
                     <p className="text-pink-600 font-extrabold text-lg mt-1">
                       ৳ {item.price.toLocaleString()}
                     </p>
                     
-                    <div className="flex items-center gap-4 mt-3 bg-gray-50 w-fit p-1 rounded-lg">
+                    {/* Quantity Toggle */}
+                    <div className="flex items-center gap-4 mt-3 bg-gray-50 dark:bg-gray-800 w-fit p-1 rounded-lg">
                       <button
                         onClick={() => updateQuantity(item.id, -1)}
-                        className="w-8 h-8 flex items-center justify-center bg-white border rounded-md hover:bg-pink-50 hover:text-pink-600 transition"
+                        className="w-8 h-8 flex items-center justify-center bg-white dark:bg-gray-700 border dark:border-gray-600 rounded-md hover:bg-pink-50 dark:hover:bg-pink-900/30 hover:text-pink-600 transition dark:text-white"
                       >
                         <Minus size={14} />
                       </button>
-                      <span className="font-bold text-gray-700 min-w-5 text-center">
+                      <span className="font-bold text-gray-700 dark:text-gray-200 min-w-5 text-center">
                         {item.quantity}
                       </span>
                       <button
                         onClick={() => updateQuantity(item.id, 1)}
-                        className="w-8 h-8 flex items-center justify-center bg-white border rounded-md hover:bg-pink-50 hover:text-pink-600 transition"
+                        className="w-8 h-8 flex items-center justify-center bg-white dark:bg-gray-700 border dark:border-gray-600 rounded-md hover:bg-pink-50 dark:hover:bg-pink-900/30 hover:text-pink-600 transition dark:text-white"
                       >
                         <Plus size={14} />
                       </button>
@@ -130,7 +131,7 @@ export default function CartPage() {
 
                   <button
                     onClick={() => removeItem(item.id)}
-                    className="self-end sm:self-center text-gray-400 hover:text-red-500 p-2 hover:bg-red-50 rounded-full transition"
+                    className="self-end sm:self-center text-gray-400 hover:text-red-500 p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition"
                     title="Remove item"
                   >
                     <Trash2 size={22} />
@@ -141,33 +142,33 @@ export default function CartPage() {
           </div>
 
           {/* Order Summary */}
-          <div className="bg-white p-8 rounded-3xl h-fit border border-gray-100 shadow-sm">
-            <h2 className="text-xl font-bold text-gray-800 mb-6 border-b pb-4">Order Summary</h2>
+          <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl h-fit border border-gray-100 dark:border-gray-800 shadow-sm">
+            <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-6 border-b dark:border-gray-800 pb-4">Order Summary</h2>
             
             <div className="space-y-4 mb-6">
-              <div className="flex justify-between text-gray-500">
+              <div className="flex justify-between text-gray-500 dark:text-gray-400">
                 <span>Subtotal</span>
-                <span className="font-semibold text-gray-800">৳ {subtotal.toLocaleString()}</span>
+                <span className="font-semibold text-gray-800 dark:text-gray-200">৳ {subtotal.toLocaleString()}</span>
               </div>
-              <div className="flex justify-between text-gray-500">
+              <div className="flex justify-between text-gray-500 dark:text-gray-400">
                 <span>Shipping Fee</span>
-                <span className="font-semibold text-gray-800">৳ {deliveryCharge}</span>
+                <span className="font-semibold text-gray-800 dark:text-gray-200">৳ {deliveryCharge}</span>
               </div>
             </div>
 
-            <div className="border-t border-dashed pt-6 mb-8 flex justify-between items-center">
-              <span className="text-lg font-bold text-gray-800">Total Amount</span>
+            <div className="border-t border-dashed dark:border-gray-700 pt-6 mb-8 flex justify-between items-center">
+              <span className="text-lg font-bold text-gray-800 dark:text-white">Total Amount</span>
               <span className="text-2xl font-black text-pink-600">৳ {total.toLocaleString()}</span>
             </div>
 
             <button 
               onClick={() => router.push('/checkout')}
-              className="w-full bg-pink-600 text-white py-4 rounded-xl font-bold hover:bg-pink-700 transition shadow-lg shadow-pink-100 active:scale-95"
+              className="w-full bg-pink-600 text-white py-4 rounded-xl font-bold hover:bg-pink-700 transition shadow-lg shadow-pink-100 dark:shadow-none active:scale-95"
             >
               Proceed to Checkout
             </button>
             
-            <p className="text-center text-xs text-gray-400 mt-6">
+            <p className="text-center text-xs text-gray-400 dark:text-gray-500 mt-6">
               Secure Checkout • 100% Satisfaction Guaranteed
             </p>
           </div>

@@ -7,12 +7,14 @@ import { MessageService } from "@/app/services/message.service";
 import {
   Mail,
   Trash2,
-  Calendar,
   MessageSquare,
   Loader2,
   Inbox,
+  Sparkles,
+  Clock
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "sonner"; 
+import { format } from "date-fns";
 
 export default function AdminMessagesPage() {
   const queryClient = useQueryClient();
@@ -28,149 +30,137 @@ export default function AdminMessagesPage() {
     mutationFn: MessageService.deleteMessage,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["messages"] });
-      toast.success("Message deleted successfully");
+      toast.success("Inquiry removed from inbox");
     },
-    onError: () => toast.error("Failed to delete message"),
+    onError: () => toast.error("System failed to delete message"),
   });
 
   if (isLoading) {
     return (
-      <div className="flex h-96 items-center justify-center">
-        <Loader2 className="h-10 w-10 animate-spin text-pink-500" />
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-gray-400">
+        <Loader2 className="h-10 w-10 animate-spin text-[#6C5DD3] mb-4" />
+        <p className="font-black tracking-widest uppercase text-[10px]">Syncing Mailbox...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] p-4 md:p-8">
+    <div className="transition-colors duration-300">
       {/* Header Section */}
-      <div className="mx-auto max-w-6xl mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
-            <div className="bg-pink-100 p-2 rounded-lg">
-              <Inbox className="text-pink-600" size={24} />
+          <div className="flex items-center gap-3 mb-2">
+            <div className="bg-[#6C5DD3]/10 p-2 rounded-xl">
+              <Inbox className="text-[#6C5DD3]" size={28} />
             </div>
-            Customer Inbox
-          </h1>
-          <p className="text-gray-500 text-sm mt-1">
-            Manage all received inquiries from your website.
+            <h1 className="text-2xl md:text-3xl font-black text-gray-800 dark:text-white uppercase tracking-tighter">
+              Customer <span className="text-[#6C5DD3]">Inbox</span>
+            </h1>
+          </div>
+          <p className="text-sm text-gray-500 dark:text-gray-400 font-medium ml-12">
+            Communicate and manage direct inquiries from your clients.
           </p>
         </div>
-        <div className="bg-white px-4 py-2 rounded-full shadow-sm border text-sm font-semibold text-gray-600">
-          Total: {messages.length} Messages
+        
+        <div className="bg-white dark:bg-gray-900 px-6 py-3 rounded-2xl shadow-xl shadow-purple-200 dark:shadow-none border border-gray-50 dark:border-gray-800 flex items-center gap-3">
+           <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+           <span className="text-xs font-black text-gray-600 dark:text-gray-300 uppercase tracking-widest">
+             Live: {messages.length} Threads
+           </span>
         </div>
       </div>
 
       {/* Messages List Container */}
-      <div className="mx-auto max-w-6xl space-y-4">
+      <div className="space-y-6 max-w-5xl mx-auto">
         {messages.length > 0 ? (
           messages.map((msg: any) => (
             <div
               key={msg.id}
-              className="group relative bg-white border border-gray-100 rounded-2xl p-4 md:p-6 shadow-sm hover:shadow-md transition-all duration-300"
+              className="group bg-white dark:bg-gray-900 border border-gray-50 dark:border-gray-800 rounded-[2.5rem] p-6 md:p-8 shadow-sm hover:shadow-xl hover:shadow-purple-500/5 transition-all duration-300 relative overflow-hidden"
             >
-              <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                {/* User Info & Message */}
-                <div className="flex-1 space-y-4">
-                  <div className="flex items-center gap-3">
-                    {/* Avatar Initials */}
-                    <div className="h-12 w-12 rounded-2xl bg-linear-to-br from-pink-500 to-rose-400 flex items-center justify-center text-white font-bold shadow-inner uppercase">
-                      {msg.name.charAt(0)}
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-gray-900 text-lg leading-none">
-                        {msg.name}
-                      </h3>
-                      <a
-                        href={`mailto:${msg.email}`}
-                        className="text-sm text-pink-600 hover:underline flex items-center gap-1 mt-1"
-                      >
-                        <Mail size={12} /> {msg.email}
-                      </a>
-                    </div>
+              <div className="flex flex-col lg:flex-row gap-8">
+                
+                {/* Left Side: Sender Profile */}
+                <div className="lg:w-1/4 flex flex-row lg:flex-col items-center lg:items-start gap-4 lg:border-r border-gray-50 dark:border-gray-800 pr-4">
+                  <div className="h-16 w-16 rounded-2xl bg-linear-to-br from-[#6C5DD3] to-[#a294f9] flex items-center justify-center text-white text-2xl font-black shadow-lg shadow-purple-200 dark:shadow-none uppercase">
+                    {msg.name.charAt(0)}
                   </div>
-
-                  {/* Message Box */}
-                  <div className="bg-gray-50 rounded-2xl p-4 text-gray-700 text-sm md:text-base leading-relaxed border border-gray-50 flex gap-3">
-                    <MessageSquare
-                      size={18}
-                      className="text-gray-400 shrink-0 mt-1"
-                    />
-                    <p className="whitespace-pre-line">{msg.message}</p>
-                  </div>
-
-                  {msg.autoReply && (
-                    <div className="bg-pink-50/50 rounded-2xl p-4 border border-pink-100 flex gap-3 ml-4">
-                      <div className="bg-white p-1.5 rounded-lg h-fit shadow-sm">
-                        <Loader2
-                          size={16}
-                          className="text-pink-600 animate-pulse"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-[10px] font-bold text-pink-600 uppercase tracking-widest">
-                            AI Assistant Reply
-                          </span>
-                        </div>
-                        // eslint-disable-next-line react/jsx-no-comment-textnodes
-                        <p className="text-sm text-gray-600 italic leading-relaxed">
-                          // eslint-disable-next-line react/no-unescaped-entities
-                          "{msg.autoReply}"
-                        </p>
-                      </div>
+                  <div className="space-y-1">
+                    <h3 className="font-black text-gray-800 dark:text-gray-100 text-lg leading-tight uppercase tracking-tight truncate">
+                      {msg.name}
+                    </h3>
+                    <a
+                      href={`mailto:${msg.email}`}
+                      className="text-[11px] font-bold text-[#6C5DD3] hover:underline flex items-center gap-1.5 transition-all"
+                    >
+                      <Mail size={12} /> {msg.email}
+                    </a>
+                    <div className="flex items-center gap-2 text-[10px] text-gray-400 font-bold mt-2 uppercase tracking-widest">
+                       <Clock size={12} />
+                       {format(new Date(msg.createdAt), "dd MMM, yyyy")}
                     </div>
-                  )}
-
-                  {/* Metadata */}
-                  <div className="flex items-center gap-4 text-[12px] font-medium text-gray-400">
-                    <span className="flex items-center gap-1.5 bg-gray-100 px-3 py-1 rounded-full">
-                      <Calendar size={13} />
-                      {new Date(msg.createdAt).toLocaleDateString("en-GB", {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </span>
                   </div>
                 </div>
 
-                {/* Actions */}
-                <div className="flex md:flex-col items-center justify-end border-t md:border-t-0 pt-3 md:pt-0">
-                  <button
-                    onClick={() => {
-                      if (
-                        window.confirm(
-                          "Are you sure you want to delete this message?"
-                        )
-                      ) {
-                        deleteMutation.mutate(msg.id);
-                      }
-                    }}
-                    disabled={deleteMutation.isPending}
-                    className="flex items-center gap-2 px-4 py-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all font-semibold text-sm"
-                  >
-                    {deleteMutation.isPending ? (
-                      <Loader2 className="animate-spin" size={18} />
-                    ) : (
-                      <Trash2 size={18} />
-                    )}
-                    <span className="md:hidden lg:inline">Delete</span>
-                  </button>
+                {/* Right Side: Message Content */}
+                <div className="flex-1 space-y-6">
+                  {/* Original Inquiry */}
+                  <div className="relative">
+                    <div className="flex items-center gap-2 mb-3">
+                      <MessageSquare size={14} className="text-gray-300" />
+                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Inquiry</span>
+                    </div>
+                    <div className="bg-gray-50 dark:bg-gray-800/50 rounded-3xl p-6 text-gray-700 dark:text-gray-300 text-sm md:text-base leading-relaxed border border-transparent dark:border-gray-800">
+                      <p className="whitespace-pre-line">{msg.message}</p>
+                    </div>
+                  </div>
+
+                  {/* AI Auto Reply */}
+                  {msg.autoReply && (
+                    <div className="bg-[#6C5DD3]/5 dark:bg-[#6C5DD3]/10 rounded-3xl p-6 border border-[#6C5DD3]/10 relative group/ai">
+                      <div className="absolute -top-3 left-6 bg-[#6C5DD3] text-white px-3 py-1 rounded-full flex items-center gap-1.5 shadow-lg">
+                        <Sparkles size={10} className="animate-pulse" />
+                        <span className="text-[9px] font-black uppercase tracking-widest">AI Response Sent</span>
+                      </div>
+                      <p className="text-sm text-[#6C5DD3] dark:text-[#a294f9] italic font-medium leading-relaxed">
+                        "{msg.autoReply}"
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Desktop Action (Delete) */}
+                  <div className="flex justify-end pt-2">
+                    <button
+                      onClick={() => {
+                        if (window.confirm("Permanently archive and delete this message?")) {
+                          deleteMutation.mutate(msg.id);
+                        }
+                      }}
+                      disabled={deleteMutation.isPending}
+                      className="flex items-center gap-2 px-6 py-2.5 text-gray-400 dark:text-gray-600 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-all font-black text-[10px] uppercase tracking-widest"
+                    >
+                      {deleteMutation.isPending ? (
+                        <Loader2 className="animate-spin" size={14} />
+                      ) : (
+                        <Trash2 size={14} />
+                      )}
+                      Delete Thread
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           ))
         ) : (
-          <div className="bg-white rounded-3xl p-20 text-center border-2 border-dashed border-gray-100">
-            <div className="bg-gray-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Mail className="text-gray-300" size={40} />
+          <div className="bg-white dark:bg-gray-900 rounded-[3rem] p-32 text-center border-2 border-dashed border-gray-100 dark:border-gray-800">
+            <div className="bg-gray-50 dark:bg-gray-800 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+              <Mail className="text-gray-200 dark:text-gray-600" size={48} />
             </div>
-            <h2 className="text-xl font-bold text-gray-800">
-              Your inbox is empty
+            <h2 className="text-xl font-black text-gray-800 dark:text-white uppercase tracking-tight">
+              Inbox <span className="text-[#6C5DD3]">Zen</span>
             </h2>
-            <p className="text-gray-500">
-              When customers contact you, messages will appear here.
+            <p className="text-gray-400 dark:text-gray-500 text-sm mt-2 max-w-xs mx-auto font-medium">
+              Everything is handled. Your customer inbox is completely clear.
             </p>
           </div>
         )}

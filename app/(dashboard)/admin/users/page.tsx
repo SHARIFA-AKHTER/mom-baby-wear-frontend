@@ -1,107 +1,12 @@
-
-// "use client";
-
-// import { useEffect, useState } from "react";
-// import { UserService } from "@/app/services/user.service";
-
-// interface User {
-//   id: string;
-//   email: string;
-//   name?: string;
-//   role: "ADMIN" | "MANAGER" | "STAFF" | "CUSTOMER";
-//   status: "ACTIVE" | "INACTIVE" | "BANNED";
-// }
-
-// export default function AdminUsers() {
-//   const [users, setUsers] = useState<User[]>([]);
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     UserService.getAll().then((data) => {
-//       setUsers(data);
-//       setLoading(false);
-//     });
-//   }, []);
-
-//   const handleDelete = async (id: string) => {
-//     if (!confirm("Are you sure?")) return;
-
-//     await UserService.delete(id);
-//     setUsers((prev) => prev.filter((u) => u.id !== id));
-//   };
-
-//   if (loading) return <p>Loading users...</p>;
-
-//   return (
-//     <div className="space-y-6">
-//       <h1 className="text-2xl font-bold">Users</h1>
-
-//       {/* Desktop Table */}
-//       <div className="hidden md:block overflow-x-auto bg-white rounded-lg shadow">
-//         <table className="w-full text-sm">
-//           <thead className="bg-gray-100 text-left">
-//             <tr>
-//               <th className="p-3">Name</th>
-//               <th className="p-3">Email</th>
-//               <th className="p-3">Role</th>
-//               <th className="p-3">Status</th>
-//               <th className="p-3">Action</th>
-//             </tr>
-//           </thead>
-
-//           <tbody>
-//             {users.map((user) => (
-//               <tr key={user.id} className="border-t">
-//                 <td className="p-3">{user.name || "N/A"}</td>
-//                 <td className="p-3">{user.email}</td>
-//                 <td className="p-3">{user.role}</td>
-//                 <td className="p-3">{user.status}</td>
-//                 <td className="p-3">
-//                   <button
-//                     onClick={() => handleDelete(user.id)}
-//                     className="text-red-600 hover:underline"
-//                   >
-//                     Delete
-//                   </button>
-//                 </td>
-//               </tr>
-//             ))}
-//           </tbody>
-//         </table>
-//       </div>
-
-//       {/* Mobile Cards */}
-//       <div className="md:hidden space-y-4">
-//         {users.map((user) => (
-//           <div
-//             key={user.id}
-//             className="bg-white p-4 rounded-lg shadow space-y-2"
-//           >
-//             <p><b>Name:</b> {user.name || "N/A"}</p>
-//             <p><b>Email:</b> {user.email}</p>
-//             <p><b>Role:</b> {user.role}</p>
-//             <p><b>Status:</b> {user.status}</p>
-
-//             <button
-//               onClick={() => handleDelete(user.id)}
-//               className="w-full py-2 bg-red-500 text-white rounded"
-//             >
-//               Delete
-//             </button>
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// }
-
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react/no-unescaped-entities */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useState } from "react";
 import { UserService } from "@/app/services/user.service";
-import { Trash2, UserCheck, Shield, Loader2, Users } from "lucide-react";
+import { Trash2, Shield, Loader2, Users, Search, Mail, User as UserIcon } from "lucide-react";
 
 interface User {
   id: string;
@@ -112,37 +17,34 @@ interface User {
 }
 
 export default function AdminUsers() {
-  
   const [usersData, setUsersData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     UserService.getAll()
       .then((res: any) => {
-        
         setUsersData(res.data?.data || res.data || res);
         setLoading(false);
       })
       .catch(() => setLoading(false));
   }, []);
 
-
   const userList: User[] = Array.isArray(usersData) 
     ? usersData 
     : usersData?.result || [];
+
+  const filteredUsers = userList.filter(u => 
+    u.email.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    (u.name && u.name.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this user?")) return;
     try {
       await UserService.delete(id);
       const filteredList = userList.filter((u) => u.id !== id);
-      
-    
-      if (Array.isArray(usersData)) {
-        setUsersData(filteredList);
-      } else {
-        setUsersData({ ...usersData, result: filteredList });
-      }
+      setUsersData(Array.isArray(usersData) ? filteredList : { ...usersData, result: filteredList });
     } catch (error) {
       alert("Failed to delete user");
     }
@@ -150,69 +52,88 @@ export default function AdminUsers() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh] text-gray-500">
-        <Loader2 className="animate-spin mb-2" size={32} />
-        <p>Loading users...</p>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-gray-400">
+        <Loader2 className="animate-spin mb-4 text-[#6C5DD3]" size={40} />
+        <p className="font-black tracking-widest uppercase text-xs">Accessing Database...</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 p-4 md:p-6 max-w-7xl mx-auto">
-      <div className="flex justify-between items-center">
+    <div className="transition-colors duration-300">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
         <div>
-          <h1 className="text-2xl font-extrabold text-gray-800">User Management</h1>
-          <p className="text-sm text-gray-500">Manage all registered users and their roles</p>
+          <h1 className="text-2xl md:text-3xl font-black text-gray-800 dark:text-white uppercase tracking-tighter">
+            User <span className="text-[#6C5DD3]">Access</span>
+          </h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 font-medium mt-1">Manage system permissions and accounts</p>
         </div>
-        <div className="bg-[#6C5DD3]/10 text-[#6C5DD3] px-4 py-2 rounded-xl text-sm font-bold border border-[#6C5DD3]/20">
-          Total Users: {userList.length}
+        
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <input 
+              type="text" 
+              placeholder="Search by name or email..." 
+              className="pl-10 pr-4 py-2.5 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all dark:text-gray-200 w-full md:w-64"
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <div className="bg-[#6C5DD3]/10 text-[#6C5DD3] dark:bg-[#6C5DD3]/20 px-4 py-2.5 rounded-xl text-xs font-black border border-[#6C5DD3]/20 uppercase tracking-widest">
+             Active: {userList.length}
+          </div>
         </div>
       </div>
 
-      {/* Desktop View */}
-      <div className="hidden md:block overflow-hidden bg-white rounded-[24px] shadow-sm border border-gray-100">
-        <table className="w-full text-left border-collapse">
-          <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-bold">
-            <tr>
-              <th className="p-4">User Details</th>
-              <th className="p-4">Role</th>
-              <th className="p-4">Status</th>
-              <th className="p-4 text-right">Actions</th>
+      {/* Desktop View Table */}
+      <div className="hidden lg:block bg-white dark:bg-gray-900 rounded-[2.5rem] border border-gray-50 dark:border-gray-800 shadow-sm overflow-hidden">
+        <table className="w-full text-left">
+          <thead className="bg-gray-50/50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800">
+            <tr className="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+              <th className="p-6">User Profile</th>
+              <th className="p-6">Access Level</th>
+              <th className="p-6">Status</th>
+              <th className="p-6 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50 text-sm">
-            {userList.map((user) => (
-              <tr key={user.id} className="hover:bg-gray-50/50 transition-colors">
-                <td className="p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[#6C5DD3] font-bold">
+          <tbody className="divide-y divide-gray-50 dark:divide-gray-800 text-sm">
+            {filteredUsers.map((user) => (
+              <tr key={user.id} className="hover:bg-purple-50/30 dark:hover:bg-purple-900/5 transition-colors group">
+                <td className="p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-linear-to-br from-[#6C5DD3] to-[#8E84E5] flex items-center justify-center text-white font-black text-lg shadow-lg shadow-purple-100 dark:shadow-none transition-transform group-hover:rotate-6">
                       {user.name?.[0] || user.email[0].toUpperCase()}
                     </div>
                     <div>
-                      <p className="font-bold text-gray-800">{user.name || "N/A"}</p>
-                      <p className="text-xs text-gray-400">{user.email}</p>
+                      <p className="font-black text-gray-800 dark:text-gray-200 leading-none">{user.name || "Anonymous"}</p>
+                      <p className="text-xs text-gray-400 mt-1 flex items-center gap-1 font-medium">
+                        <Mail size={12} /> {user.email}
+                      </p>
                     </div>
                   </div>
                 </td>
-                <td className="p-4">
-                   <span className="flex items-center gap-1.5 font-medium text-gray-600">
+                <td className="p-6">
+                   <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-bold text-xs uppercase tracking-tighter border dark:border-gray-700">
                      <Shield size={14} className="text-[#6C5DD3]" />
                      {user.role}
                    </span>
                 </td>
-                <td className="p-4">
-                  <span className={`px-3 py-1 rounded-full text-[10px] font-bold border ${
-                    user.status === 'ACTIVE' ? 'bg-green-50 text-green-600 border-green-100' : 'bg-red-50 text-red-600 border-red-100'
+                <td className="p-6">
+                  <span className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border ${
+                    user.status === 'ACTIVE' 
+                    ? 'bg-green-50 text-green-600 border-green-100 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800' 
+                    : 'bg-red-50 text-red-600 border-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800'
                   }`}>
                     {user.status}
                   </span>
                 </td>
-                <td className="p-4 text-right">
+                <td className="p-6 text-right">
                   <button
                     onClick={() => handleDelete(user.id)}
-                    className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                    className="p-3 text-red-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-2xl transition-all active:scale-90"
                   >
-                    <Trash2 size={18} />
+                    <Trash2 size={20} />
                   </button>
                 </td>
               </tr>
@@ -221,34 +142,37 @@ export default function AdminUsers() {
         </table>
       </div>
 
-      {/* Mobile View */}
-      <div className="md:hidden space-y-4">
-        {userList.map((user) => (
-          <div key={user.id} className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 space-y-4">
-            <div className="flex justify-between items-start">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#6C5DD3] text-white flex items-center justify-center font-bold">
+      {/* Mobile Grid View */}
+      <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {filteredUsers.map((user) => (
+          <div key={user.id} className="bg-white dark:bg-gray-900 p-6 rounded-[2rem] border border-gray-50 dark:border-gray-800 shadow-sm group">
+            <div className="flex justify-between items-start mb-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-[#6C5DD3] text-white flex items-center justify-center font-black text-xl">
                   {user.name?.[0] || user.email[0].toUpperCase()}
                 </div>
                 <div>
-                  <p className="font-bold text-gray-800">{user.name || "N/A"}</p>
-                  <p className="text-xs text-gray-400">{user.email}</p>
+                  <p className="font-black text-gray-800 dark:text-white leading-tight">{user.name || "N/A"}</p>
+                  <p className="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Role: {user.role}</p>
                 </div>
               </div>
-              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
-                user.status === 'ACTIVE' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+              <span className={`text-[9px] font-black px-3 py-1 rounded-lg border uppercase tracking-widest ${
+                user.status === 'ACTIVE' ? 'bg-green-50 text-green-600 border-green-100' : 'bg-red-50 text-red-600 border-red-100'
               }`}>
                 {user.status}
               </span>
             </div>
             
-            <div className="flex items-center justify-between pt-2 border-t border-gray-50">
-              <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">{user.role}</span>
+            <div className="flex items-center justify-between pt-4 border-t border-gray-50 dark:border-gray-800">
+              <div className="flex items-center gap-2 text-gray-400 text-xs truncate max-w-37.5">
+                <Mail size={14} />
+                <span className="truncate">{user.email}</span>
+              </div>
               <button
                 onClick={() => handleDelete(user.id)}
-                className="flex items-center gap-1 text-red-500 text-sm font-bold"
+                className="flex items-center gap-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 p-2 rounded-xl text-xs font-black uppercase transition-all"
               >
-                <Trash2 size={16} /> Delete
+                <Trash2 size={16} /> REMOVE
               </button>
             </div>
           </div>
@@ -256,10 +180,13 @@ export default function AdminUsers() {
       </div>
 
       {/* Empty State */}
-      {userList.length === 0 && (
-        <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-gray-100">
-          <Users className="mx-auto text-gray-200 mb-4" size={50} />
-          <p className="text-gray-400 font-medium">No users found in the database.</p>
+      {filteredUsers.length === 0 && (
+        <div className="text-center py-24 bg-white dark:bg-gray-900 rounded-[3rem] border-2 border-dashed border-gray-100 dark:border-gray-800 transition-all">
+          <div className="w-20 h-20 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Users className="text-gray-300 dark:text-gray-600" size={40} />
+          </div>
+          <h3 className="text-gray-800 dark:text-gray-200 font-bold text-lg">No matches found</h3>
+          <p className="text-gray-400 dark:text-gray-500 text-sm">We couldn't find any users matching your criteria.</p>
         </div>
       )}
     </div>
