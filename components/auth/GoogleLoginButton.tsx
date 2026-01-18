@@ -1,4 +1,82 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// /* eslint-disable @typescript-eslint/no-explicit-any */
+// /* eslint-disable @typescript-eslint/no-explicit-any */
+// "use client";
+
+// import { GoogleLogin } from "@react-oauth/google";
+// import axios from "axios";
+// import { toast } from "sonner";
+// import { useRouter } from "next/navigation";
+// import { useQueryClient } from "@tanstack/react-query";
+// import Cookies from "js-cookie";
+
+// export default function GoogleLoginButton() {
+//   const router = useRouter();
+//   const queryClient = useQueryClient();
+
+//   const handleGoogleSuccess = async (response: any) => {
+//     try {
+//       const idToken = response.credential;
+//       const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/google`;
+      
+      
+//       const res = await axios.post(apiUrl, { idToken }, { withCredentials: true });
+
+//       if (res.data.success) {
+       
+//         const token = res.data.data.accessToken;
+
+//         Cookies.set("accessToken", token, { 
+//           expires: 7,
+//           secure: true, 
+//           sameSite: 'none' 
+//         });
+
+//         localStorage.setItem("accessToken", token);
+
+//         toast.success("Login Successful!");
+
+
+//         await queryClient.invalidateQueries({ queryKey: ["me"] });
+
+     
+//         router.push("/");
+//         setTimeout(() => {
+//           router.refresh();
+//         }, 100);
+//       }
+//     } catch (error: any) {
+//       console.error("Google Login Error:", error);
+//       toast.error(error.response?.data?.message || "Login Failed");
+//     }
+//   };
+
+//   return (
+//     <div className="w-full">
+//       <style jsx global>{`
+//         .google-login-wrapper iframe {
+//           width: 100% !important;
+//           max-width: 100% !important;
+//           left: 0 !important;
+//         }
+//         .google-login-wrapper > div {
+//           width: 100% !important;
+//         }
+//       `}</style>
+
+//       <div className="google-login-wrapper w-full flex justify-center">
+//         <GoogleLogin
+//           onSuccess={handleGoogleSuccess}
+//           onError={() => toast.error("Login failed")}
+//           theme="outline"
+//           shape="pill"
+//           width="350" 
+//           text="continue_with"
+//         />
+//       </div>
+//     </div>
+//   );
+// }
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -8,21 +86,26 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
 
 export default function GoogleLoginButton() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const [mounted, setMounted] = useState(false);
+
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleGoogleSuccess = async (response: any) => {
     try {
       const idToken = response.credential;
       const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/google`;
       
-      
       const res = await axios.post(apiUrl, { idToken }, { withCredentials: true });
 
       if (res.data.success) {
-       
         const token = res.data.data.accessToken;
 
         Cookies.set("accessToken", token, { 
@@ -32,17 +115,17 @@ export default function GoogleLoginButton() {
         });
 
         localStorage.setItem("accessToken", token);
-
         toast.success("Login Successful!");
-
 
         await queryClient.invalidateQueries({ queryKey: ["me"] });
 
-     
-        router.push("/");
-        setTimeout(() => {
-          router.refresh();
-        }, 100);
+       
+        const role = res.data?.data?.user?.role;
+        if (role === "ADMIN") router.push("/admin/dashboard");
+        else if (role === "STAFF") router.push("/staff/dashboard");
+        else router.push("/");
+
+        router.refresh();
       }
     } catch (error: any) {
       console.error("Google Login Error:", error);
@@ -50,26 +133,37 @@ export default function GoogleLoginButton() {
     }
   };
 
+  if (!mounted) return null;
+
   return (
-    <div className="w-full">
+    <div className="w-full flex justify-center">
+      
       <style jsx global>{`
-        .google-login-wrapper iframe {
+        .google-login-container {
           width: 100% !important;
-          max-width: 100% !important;
-          left: 0 !important;
+          display: flex !important;
+          justify-content: center !important;
         }
-        .google-login-wrapper > div {
+        .google-login-container > div {
           width: 100% !important;
+          max-width: 400px !important; 
+          min-width: 280px !important;
+        }
+        @media (max-width: 640px) {
+          .google-login-container > div {
+            max-width: 100% !important;
+          }
         }
       `}</style>
 
-      <div className="google-login-wrapper w-full flex justify-center">
+      <div className="google-login-container overflow-hidden rounded-full">
         <GoogleLogin
           onSuccess={handleGoogleSuccess}
           onError={() => toast.error("Login failed")}
-          theme="outline"
+          theme="outline" 
           shape="pill"
-          width="350" 
+          width="100%" 
+          size="large"
           text="continue_with"
         />
       </div>

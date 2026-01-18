@@ -11,7 +11,7 @@ import {
   MapPin, 
   Send,
   Heart,
-  MessageCircle, // For WhatsApp
+  MessageCircle,
   Linkedin,
   Youtube
 } from "lucide-react";
@@ -41,7 +41,7 @@ export default function Footer() {
                 className="object-cover"
                 />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-pink-600 to-rose-500 bg-clip-text text-transparent">
+            <span className="text-xl font-bold bg-linear-to-r from-pink-600 to-rose-500 bg-clip-text text-transparent">
               Mom & Baby
             </span>
           </Link>
@@ -98,7 +98,7 @@ export default function Footer() {
         </div>
 
         {/* 4. Newsletter */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-pink-50 to-white dark:from-gray-900 dark:to-gray-950 p-6 rounded-3xl border border-pink-100/50 dark:border-gray-800">
+        <div className="relative overflow-hidden bg-linear-to-br from-pink-50 to-white dark:from-gray-900 dark:to-gray-950 p-6 rounded-3xl border border-pink-100/50 dark:border-gray-800">
           <div className="relative z-10">
             <h3 className="text-gray-900 dark:text-white font-bold text-sm uppercase mb-2">Join the Club</h3>
             <p className="text-gray-500 dark:text-gray-400 text-xs mb-4 font-medium">Get updates on new drops and exclusive offers.</p>

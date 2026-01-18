@@ -11,10 +11,11 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { LoginInput, loginSchema } from "@/app/schemas/auth.schema";
 import { AuthService } from "@/app/services/auth.service";
-import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
+
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { KeyRound, Mail, Lock, ShieldCheck, UserCog } from "lucide-react";
+import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -80,7 +81,7 @@ export default function LoginPage() {
       </div>
 
       <div className="flex-1 flex items-center justify-center p-4 sm:p-8 md:p-12">
-        <div className="w-full max-w-[450px] bg-white dark:bg-[#1a1d2b] p-6 sm:p-10 rounded-3xl sm:rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800">
+        <div className="w-full max-w-112.5 bg-white dark:bg-[#1a1d2b] p-6 sm:p-10 rounded-3xl sm:rounded-[40px] shadow-xl dark:shadow-none border border-gray-100 dark:border-gray-800">
           
           <div className="mb-8 text-center lg:text-left">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white">
