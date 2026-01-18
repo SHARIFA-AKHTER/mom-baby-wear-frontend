@@ -1,4 +1,3 @@
-
 // /* eslint-disable @next/next/no-img-element */
 // /* eslint-disable @typescript-eslint/no-explicit-any */
 // "use client";
@@ -24,7 +23,6 @@
 //   const [products, setProducts] = useState<any>([]);
 //   const [categories, setCategories] = useState<any[]>([]);
 //   const [loading, setLoading] = useState(true);
-  
 
 //   useEffect(() => {
 //     const fetchData = async () => {
@@ -238,7 +236,7 @@ export default function HomePage() {
   const handleNewsletter = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    
+
     try {
       const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
       const res = await fetch(`${API_URL}/newsletter/subscribe`, {
@@ -273,23 +271,74 @@ export default function HomePage() {
       </section>
 
       {/* 2. Trust Badges */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
-          <div className="flex flex-col items-center text-center gap-2">
-            <Truck className="text-pink-500" size={28} />
-            <p className="text-sm font-bold text-gray-800 dark:text-gray-200">Fast Delivery</p>
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl p-8 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-xl shadow-gray-200/50 dark:shadow-none">
+          {/* Item 1 */}
+          <div className="flex flex-col items-center text-center gap-3 group transition-all duration-300">
+            <div className="w-14 h-14 bg-pink-50 dark:bg-pink-900/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+              <Truck className="text-pink-500" size={32} strokeWidth={1.5} />
+            </div>
+            <div>
+              <p className="text-sm font-black uppercase tracking-tighter text-gray-800 dark:text-gray-100">
+                Fast Delivery
+              </p>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
+                Within 24 Hours
+              </p>
+            </div>
           </div>
-          <div className="flex flex-col items-center text-center gap-2 border-l border-gray-100">
-            <ShieldCheck className="text-pink-500" size={28} />
-            <p className="text-sm font-bold text-gray-800 dark:text-gray-200">Secure Payment</p>
+
+          {/* Item 2 */}
+          <div className="flex flex-col items-center text-center gap-3 group transition-all duration-300 md:border-l border-gray-100 dark:border-gray-800">
+            <div className="w-14 h-14 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+              <ShieldCheck
+                className="text-blue-500"
+                size={32}
+                strokeWidth={1.5}
+              />
+            </div>
+            <div>
+              <p className="text-sm font-black uppercase tracking-tighter text-gray-800 dark:text-gray-100">
+                Secure Payment
+              </p>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
+                100% Safe Checkout
+              </p>
+            </div>
           </div>
-          <div className="flex flex-col items-center text-center gap-2 border-l border-gray-100">
-            <Star className="text-pink-500" size={28} />
-            <p className="text-sm font-bold text-gray-800 dark:text-gray-200">Best Quality</p>
+
+          {/* Item 3 */}
+          <div className="flex flex-col items-center text-center gap-3 group transition-all duration-300 md:border-l border-gray-100 dark:border-gray-800">
+            <div className="w-14 h-14 bg-amber-50 dark:bg-amber-900/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+              <Star className="text-amber-500" size={32} strokeWidth={1.5} />
+            </div>
+            <div>
+              <p className="text-sm font-black uppercase tracking-tighter text-gray-800 dark:text-gray-100">
+                Best Quality
+              </p>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
+                Genuine Products
+              </p>
+            </div>
           </div>
-          <div className="flex flex-col items-center text-center gap-2 border-l border-gray-100">
-            <ShoppingBag className="text-pink-500" size={28} />
-            <p className="text-sm font-bold text-gray-800 dark:text-gray-200">Easy Return</p>
+
+          {/* Item 4 */}
+          <div className="flex flex-col items-center text-center gap-3 group transition-all duration-300 md:border-l border-gray-100 dark:border-gray-800">
+            <div className="w-14 h-14 bg-green-50 dark:bg-green-900/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+              <ShoppingBag
+                className="text-green-500"
+                size={32}
+                strokeWidth={1.5}
+              />
+            </div>
+            <div>
+              <p className="text-sm font-black uppercase tracking-tighter text-gray-800 dark:text-gray-100">
+                Easy Return
+              </p>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
+                7 Days Money Back
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -300,15 +349,30 @@ export default function HomePage() {
           <h2 className="text-xl md:text-3xl font-black text-gray-900 dark:text-white flex items-center gap-2">
             <LayoutGrid className="text-pink-500" /> Shop Categories
           </h2>
-          <Link href="/categories" className="text-pink-600 text-sm font-bold hover:underline">View All</Link>
+          <Link
+            href="/categories"
+            className="text-pink-600 text-sm font-bold hover:underline"
+          >
+            View All
+          </Link>
         </div>
         <div className="flex overflow-x-auto pb-4 gap-6 scrollbar-hide md:grid md:grid-cols-6 md:overflow-visible">
           {categories.map((cat) => (
-            <Link key={cat.id} href={`/categories/${cat.id}`} className="shrink-0 group flex flex-col items-center gap-3">
+            <Link
+              key={cat.id}
+              href={`/categories/${cat.id}`}
+              className="shrink-0 group flex flex-col items-center gap-3"
+            >
               <div className="w-20 h-20 md:w-28 md:h-28 rounded-full border-2 border-pink-100 p-1 group-hover:border-pink-500 transition-all duration-300 shadow-sm overflow-hidden">
-                <img src={cat.image || "/placeholder.png"} alt={cat.name} className="w-full h-full object-cover" />
+                <img
+                  src={cat.image || "/placeholder.png"}
+                  alt={cat.name}
+                  className="w-full h-full object-cover"
+                />
               </div>
-              <span className="text-sm font-bold text-gray-700 dark:text-gray-300 group-hover:text-pink-600">{cat.name}</span>
+              <span className="text-sm font-bold text-gray-700 dark:text-gray-300 group-hover:text-pink-600">
+                {cat.name}
+              </span>
             </Link>
           ))}
         </div>
@@ -321,22 +385,30 @@ export default function HomePage() {
             <div className="space-y-1">
               <Users className="mx-auto opacity-80" size={30} />
               <h3 className="text-3xl font-black">{stats.happyMoms}+</h3>
-              <p className="text-xs font-bold uppercase tracking-widest text-pink-100">Happy Moms</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-pink-100">
+                Happy Moms
+              </p>
             </div>
             <div className="space-y-1 border-l border-pink-500">
               <ShoppingBag className="mx-auto opacity-80" size={30} />
               <h3 className="text-3xl font-black">{stats.productsSold}+</h3>
-              <p className="text-xs font-bold uppercase tracking-widest text-pink-100">Items Sold</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-pink-100">
+                Items Sold
+              </p>
             </div>
             <div className="space-y-1 border-l border-pink-500">
               <Star className="mx-auto opacity-80" size={30} />
               <h3 className="text-3xl font-black">{stats.totalReviews}</h3>
-              <p className="text-xs font-bold uppercase tracking-widest text-pink-100">Top Reviews</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-pink-100">
+                Top Reviews
+              </p>
             </div>
             <div className="space-y-1 border-l border-pink-500">
               <CheckCircle className="mx-auto opacity-80" size={30} />
               <h3 className="text-3xl font-black">{stats.avgRating}</h3>
-              <p className="text-xs font-bold uppercase tracking-widest text-pink-100">Avg Rating</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-pink-100">
+                Avg Rating
+              </p>
             </div>
           </div>
         </section>
@@ -345,20 +417,29 @@ export default function HomePage() {
       {/* 5. New Arrivals */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex items-center justify-between mb-10">
-          <h2 className="text-2xl md:text-4xl font-black text-gray-900 dark:text-white">New Arrivals</h2>
+          <h2 className="text-2xl md:text-4xl font-black text-gray-900 dark:text-white">
+            New Arrivals
+          </h2>
           <Link href="/products">
-            <Button variant="ghost" className="text-pink-600 hover:bg-pink-50 font-bold">
+            <Button
+              variant="ghost"
+              className="text-pink-600 hover:bg-pink-50 font-bold"
+            >
               Explore More <ArrowRight className="ml-2" size={18} />
             </Button>
           </Link>
         </div>
         {loading ? (
-          <div className="flex justify-center py-20"><Loader2 className="animate-spin text-pink-500" size={40} /></div>
+          <div className="flex justify-center py-20">
+            <Loader2 className="animate-spin text-pink-500" size={40} />
+          </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
-            {(Array.isArray(products) ? products : products?.result || []).slice(0, 8).map((product: any) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+            {(Array.isArray(products) ? products : products?.result || [])
+              .slice(0, 8)
+              .map((product: any) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
           </div>
         )}
       </section>
@@ -367,14 +448,25 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="bg-gradient-to-r from-pink-600 to-rose-500 rounded-3xl p-8 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8 text-white shadow-xl">
           <div className="max-w-md space-y-4 text-center md:text-left">
-            <h2 className="text-3xl md:text-5xl font-black">Special Mother-Baby Matching!</h2>
-            <p className="opacity-90">Get up to 20% discount on matching outfits for mom and the little one.</p>
+            <h2 className="text-3xl md:text-5xl font-black">
+              Special Mother-Baby Matching!
+            </h2>
+            <p className="opacity-90">
+              Get up to 20% discount on matching outfits for mom and the little
+              one.
+            </p>
             <Link href={`/categories/mother-and-baby-gown-set`}>
-              <Button className="bg-white text-pink-600 font-bold hover:bg-gray-100 rounded-full px-10">Shop Now</Button>
+              <Button className="bg-white text-pink-600 font-bold hover:bg-gray-100 rounded-full px-10">
+                Shop Now
+              </Button>
             </Link>
           </div>
           <div className="w-full md:w-1/3">
-            <img src="https://i.pinimg.com/474x/0b/d8/81/0bd881d3583c07af38f2e3bcf91dab1c.jpg" alt="Promo" className="rounded-2xl shadow-2xl" />
+            <img
+              src="https://i.pinimg.com/474x/0b/d8/81/0bd881d3583c07af38f2e3bcf91dab1c.jpg"
+              alt="Promo"
+              className="rounded-2xl shadow-2xl"
+            />
           </div>
         </div>
       </section>
@@ -382,11 +474,17 @@ export default function HomePage() {
       {/* 7. Newsletter Section */}
       <section className="max-w-7xl mx-auto px-4 py-20 text-center">
         <div className="bg-white dark:bg-gray-900 border border-pink-100 dark:border-gray-800 rounded-[2.5rem] p-10 md:p-20 shadow-sm">
-          <h2 className="text-3xl md:text-5xl font-black mb-4">Join Our Community</h2>
+          <h2 className="text-3xl md:text-5xl font-black mb-4">
+            Join Our Community
+          </h2>
           <p className="text-gray-500 mb-8 max-w-lg mx-auto">
-            Get early access to sales, new arrivals and baby care tips directly to your inbox.
+            Get early access to sales, new arrivals and baby care tips directly
+            to your inbox.
           </p>
-          <form onSubmit={handleNewsletter} className="flex flex-col md:flex-row gap-4 max-w-md mx-auto">
+          <form
+            onSubmit={handleNewsletter}
+            className="flex flex-col md:flex-row gap-4 max-w-md mx-auto"
+          >
             <input
               type="email"
               placeholder="Enter your email"

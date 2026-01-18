@@ -20,6 +20,7 @@ import Pagination from "@/components/ui/Pagination";
 import axiosInstance from "@/app/utils/axiosInstance";
 import { ProductService } from "@/app/services/product.service";
 import { useRouter } from "next/navigation";
+import { SalesChart } from "@/app/components/common/SalesChart";
 export default function AdminDashboardPage() {
   // --- States ---
   const [statsData, setStatsData] = useState<any>(null);
@@ -147,7 +148,9 @@ export default function AdminDashboardPage() {
               </div>
             ))}
       </div>
-
+            <div className="grid grid-cols-1 gap-6">
+        <SalesChart />
+      </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* 3. Inventory Management (Left Side) */}
         <div className="lg:col-span-2 space-y-6">
@@ -214,7 +217,7 @@ export default function AdminDashboardPage() {
                               alt=""
                               className="w-12 h-12 rounded-xl object-cover border border-gray-100 dark:border-gray-700 group-hover:scale-110 transition-transform"
                             />
-                            <div className="max-w-[180px]">
+                            <div className="max-w-45">
                               <p className="font-bold text-gray-800 dark:text-gray-200 truncate">
                                 {product.title}
                               </p>
