@@ -1,76 +1,93 @@
-/* eslint-disable react/no-unescaped-entities */
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { 
   Facebook, 
-  Instagram, 
   Twitter, 
-  Mail, 
-  Phone, 
   MapPin, 
   Send,
   Heart,
   MessageCircle,
   Linkedin,
-  Youtube
+  Youtube,
+  Loader2,
+  ArrowRight
 } from "lucide-react";
+import { toast } from "sonner";
+import axiosInstance from "@/app/utils/axiosInstance";
 
 export default function Footer() {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const socialLinks = [
     { icon: Facebook, href: "https://www.facebook.com/joya.joba.9/", color: "hover:text-blue-600" },
-    { icon: Instagram, href: "#", color: "hover:text-pink-500" },
     { icon: Twitter, href: "https://x.com/AkhterShar40032", color: "hover:text-sky-500" },
     { icon: MessageCircle, href: "https://web.whatsapp.com", color: "hover:text-green-500" }, 
-    { icon: Linkedin, href: "https://www.linkedin.com/in/sharifa-akhter-784bb6252", color: "hover:text-blue-700" },
-    { icon: Youtube, href: "https://www.youtube.com/@SharifaAkhter012", color: "hover:text-blue-700" },
+    { icon: Linkedin, href: "https://www.linkedin.com/in/sharifa-akhter-dev", color: "hover:text-blue-700" },
+    { icon: Youtube, href: "https://www.youtube.com/@SharifaAkhter012", color: "hover:text-red-600" },
   ];
 
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+
+    setLoading(true);
+    try {
+
+      await axiosInstance.post("/newsletter/subscribe", { email });
+      toast.success("Welcome to the club! You've successfully subscribed.");
+      setEmail("");
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Subscription failed. Try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <footer className="bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800 mt-20 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-4 py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
+    <footer className="bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800 mt-28 transition-colors duration-300">
+      <div className="max-w-7xl mx-auto px-6 py-20 grid grid-cols-1 md:grid-cols-12 gap-16">
         
         {/* 1. Brand Section */}
-        <div className="space-y-6">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="relative w-10 h-10 overflow-hidden rounded-full border border-pink-100">
-                <Image
-                src="/logo.jpeg"
-                alt="Logo"
-                fill
-                className="object-cover"
-                />
+        <div className="md:col-span-4 space-y-8">
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="relative w-12 h-12 overflow-hidden rounded-2xl border border-pink-50 shadow-sm transition-transform group-hover:scale-105">
+              <Image src="/logo.jpeg" alt="Logo" fill className="object-cover" />
             </div>
-            <span className="text-xl font-bold bg-linear-to-r from-pink-600 to-rose-500 bg-clip-text text-transparent">
-              Mom & Baby
-            </span>
+            <div>
+              <h2 className="text-2xl font-black tracking-tight dark:text-white leading-none">Mom & Baby</h2>
+              <span className="text-[10px] uppercase tracking-widest font-bold text-pink-500 italic">Signature Care</span>
+            </div>
           </Link>
-          <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-            Premium quality essentials for mothers and newborns. We prioritize your comfort and your baby's smile.
+          <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed max-w-sm">
+            Setting the standard for maternal and newborn essentials. We combine safety with elegance to celebrate motherhood.
           </p>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex gap-4">
             {socialLinks.map((item, index) => (
               <a 
-                key={index} 
-                href={item.href} 
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`p-2 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-gray-400 rounded-lg ${item.color} hover:bg-white dark:hover:bg-gray-800 transition-all duration-300 shadow-sm`}
+                key={index} href={item.href} target="_blank" rel="noopener noreferrer"
+                className={`w-10 h-10 flex items-center justify-center bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-gray-400 rounded-full ${item.color} hover:bg-white dark:hover:bg-gray-800 hover:shadow-md transition-all duration-300`}
               >
-                <item.icon size={20} />
+                <item.icon size={18} />
               </a>
             ))}
           </div>
         </div>
 
-        {/* 2. Quick Links */}
-        <div>
-          <h3 className="text-gray-900 dark:text-white font-bold text-sm uppercase tracking-widest mb-6">Shopping</h3>
-          <ul className="space-y-3">
-            {['New Arrivals', 'Best Sellers', 'Baby Care', 'Maternity Wear', 'Offers'].map((item) => (
+        {/* 2. Collections Links */}
+        <div className="md:col-span-2">
+          <h3 className="text-gray-900 dark:text-white font-bold text-[11px] uppercase tracking-[0.2em] mb-10">Collections</h3>
+          <ul className="space-y-4">
+            {['New Arrivals', 'Maternity Wear', 'Baby Basics', 'Gift Sets'].map((item) => (
               <li key={item}>
-                <Link href={`/products?category=${item.toLowerCase()}`} className="text-gray-500 dark:text-gray-400 hover:text-pink-600 dark:hover:text-pink-400 text-sm transition-colors flex items-center gap-2 group">
-                  <span className="w-1.5 h-1.5 rounded-full bg-pink-200 group-hover:bg-pink-500 transition-all"></span>
+                <Link href={`/products`} className="text-gray-500 dark:text-gray-400 hover:text-pink-500 text-sm transition-all flex items-center gap-0 hover:gap-2 group">
+                  <ArrowRight size={14} className="opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all text-pink-500" />
                   {item}
                 </Link>
               </li>
@@ -78,62 +95,67 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* 3. Customer Service */}
-        <div>
-          <h3 className="text-gray-900 dark:text-white font-bold text-sm uppercase tracking-widest mb-6">Contact Us</h3>
-          <ul className="space-y-4">
-            <li className="flex items-start gap-3 text-sm text-gray-500 dark:text-gray-400">
-              <MapPin size={18} className="text-pink-500 shrink-0" />
-              <span>Gulshan-1, Dhaka, Bangladesh</span>
-            </li>
-            <li className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400 font-semibold">
-              <Phone size={18} className="text-pink-500 shrink-0" />
-              <span>+880 1700-000000</span>
-            </li>
-            <li className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
-              <Mail size={18} className="text-pink-500 shrink-0" />
-              <span>support@momnbaby.com</span>
-            </li>
-          </ul>
+        {/* 3. Contact (No Phone Number) */}
+        <div className="md:col-span-3">
+          <h3 className="text-gray-900 dark:text-white font-bold text-[11px] uppercase tracking-[0.2em] mb-10">Support</h3>
+          <div className="space-y-6">
+            <div className="flex flex-col gap-1">
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Email Address</span>
+              <a href="mailto:sr0589071@gmail.com" className="text-sm text-gray-600 dark:text-gray-300 hover:text-pink-500 transition-colors">
+                sr0589071@gmail.com
+              </a>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Location</span>
+              <span className="text-sm text-gray-600 dark:text-gray-300 flex items-center gap-2">
+                <MapPin size={14} className="text-pink-500" /> Dhaka, Bangladesh
+              </span>
+            </div>
+          </div>
         </div>
 
-        {/* 4. Newsletter */}
-        <div className="relative overflow-hidden bg-linear-to-br from-pink-50 to-white dark:from-gray-900 dark:to-gray-950 p-6 rounded-3xl border border-pink-100/50 dark:border-gray-800">
-          <div className="relative z-10">
-            <h3 className="text-gray-900 dark:text-white font-bold text-sm uppercase mb-2">Join the Club</h3>
-            <p className="text-gray-500 dark:text-gray-400 text-xs mb-4 font-medium">Get updates on new drops and exclusive offers.</p>
-            <div className="space-y-3">
+        {/* 4. Newsletter (Functional) */}
+        <div className="md:col-span-3">
+          <div className="p-8 bg-gray-50/50 dark:bg-gray-900/50 rounded-[2rem] border border-gray-100 dark:border-gray-800">
+            <h3 className="text-gray-900 dark:text-white font-bold text-sm mb-2 uppercase tracking-tight">The Newsletter</h3>
+            <p className="text-gray-500 dark:text-gray-400 text-xs mb-6">Early access to launches and exclusive member offers.</p>
+            <form onSubmit={handleSubscribe} className="space-y-3">
               <input
                 type="email"
-                placeholder="Enter your email"
-                className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 dark:text-white rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-pink-400"
+                required
+                placeholder="email@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 dark:text-white rounded-xl px-4 py-3 text-xs outline-none focus:ring-2 focus:ring-pink-500/20 transition-all"
               />
-              <Button className="w-full bg-pink-600 hover:bg-pink-700 text-white rounded-xl py-6 font-bold shadow-lg shadow-pink-200 dark:shadow-none transition-transform active:scale-95">
-                Subscribe <Send size={16} className="ml-2" />
+              <Button 
+                disabled={loading}
+                className="w-full bg-gray-900 dark:bg-pink-600 text-white rounded-xl py-6 text-xs font-bold transition-all hover:bg-black dark:hover:bg-pink-700 active:scale-95 shadow-lg shadow-gray-200 dark:shadow-none"
+              >
+                {loading ? <Loader2 size={16} className="animate-spin" /> : <>Subscribe <Send size={14} className="ml-2" /></>}
               </Button>
-            </div>
+            </form>
           </div>
         </div>
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-gray-50 dark:border-gray-900 py-8">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-gray-400 dark:text-gray-500 text-xs">
-            &copy; {new Date().getFullYear()} <span className="font-semibold text-pink-500 underline underline-offset-4">Mom & Baby Wear</span>. Quality guaranteed.
-          </p>
-          
-          {/* Payment Icons (Optional but Professional) */}
-          <div className="flex gap-4 grayscale opacity-50">
+      <div className="border-t border-gray-50 dark:border-gray-900 py-12">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="flex items-center gap-4 grayscale opacity-60">
              <Image src="/bkash.png" alt="bkash" width={40} height={25} />
              <Image src="/visa.png" alt="visa" width={40} height={25} />
              <Image src="/mastercard.png" alt="mastercard" width={40} height={25} />
           </div>
 
-          <div className="flex items-center gap-6 text-[10px] font-bold text-gray-400 uppercase tracking-tighter">
-            <Link href="/privacy" className="hover:text-pink-600 transition-colors">Privacy Policy</Link>
-            <Link href="/terms" className="hover:text-pink-600 transition-colors">Terms of Service</Link>
-            <span className="flex items-center gap-1">Dev with <Heart size={12} className="text-pink-500 fill-pink-500" /></span>
+          <p className="text-gray-400 text-[10px] font-medium tracking-widest uppercase order-3 md:order-2">
+            © {new Date().getFullYear()} Mom & Baby Wear. All Rights Reserved.
+          </p>
+
+          <div className="flex items-center gap-6 text-[10px] font-bold text-gray-400 uppercase tracking-tighter order-2 md:order-3">
+            <Link href="/privacy" className="hover:text-pink-500 transition-colors">Privacy</Link>
+            <Link href="/terms" className="hover:text-pink-500 transition-colors">Terms</Link>
+            <span className="flex items-center gap-1">Dev by <span className="text-pink-600">Sharifa</span> <Heart size={12} className="text-pink-500 fill-pink-500 animate-pulse" /></span>
           </div>
         </div>
       </div>
