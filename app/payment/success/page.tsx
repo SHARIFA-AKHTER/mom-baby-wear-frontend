@@ -1,4 +1,55 @@
 
+// "use client";
+
+// import { useSearchParams } from "next/navigation";
+// import Link from "next/link";
+// import { CheckCircle } from "lucide-react";
+// import { Suspense } from "react";
+
+// function SuccessContent() {
+//   const searchParams = useSearchParams();
+//   const tranId = searchParams.get("tran_id");
+
+//   return (
+//     <div className="bg-white p-8 rounded-2xl shadow-lg text-center max-w-md w-full">
+//       <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+//       <h1 className="text-2xl font-bold text-gray-800 mb-2">Payment Successful!</h1>
+//       <p className="text-gray-600 mb-6">
+//         Your transaction ID:{" "}
+//         <span className="font-mono font-bold text-gray-900">
+//           {tranId || "N/A"}
+//         </span>
+//       </p>
+//       <div className="space-y-3">
+        
+//         <Link
+//           href="/"
+//           className="inline-block w-full bg-pink-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-pink-700 transition"
+//         >
+//           Return to Home
+//         </Link>
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default function PaymentSuccess() {
+//   return (
+//     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+//       <Suspense 
+//         fallback={
+//           <div className="text-center p-8 bg-white rounded-2xl shadow-lg">
+//             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600 mx-auto"></div>
+//             <p className="mt-4 text-gray-600">Loading payment details...</p>
+//           </div>
+//         }
+//       >
+//         <SuccessContent />
+//       </Suspense>
+//     </div>
+//   );
+// }
+
 "use client";
 
 import { useSearchParams } from "next/navigation";
@@ -11,20 +62,19 @@ function SuccessContent() {
   const tranId = searchParams.get("tran_id");
 
   return (
-    <div className="bg-white p-8 rounded-2xl shadow-lg text-center max-w-md w-full">
+    <div className="bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-lg dark:shadow-2xl border dark:border-gray-800 text-center max-w-md w-full transition-colors">
       <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-      <h1 className="text-2xl font-bold text-gray-800 mb-2">Payment Successful!</h1>
-      <p className="text-gray-600 mb-6">
+      <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">Payment Successful!</h1>
+      <p className="text-gray-600 dark:text-gray-400 mb-6">
         Your transaction ID:{" "}
-        <span className="font-mono font-bold text-gray-900">
+        <span className="font-mono font-bold text-gray-900 dark:text-pink-500">
           {tranId || "N/A"}
         </span>
       </p>
       <div className="space-y-3">
-        
         <Link
           href="/"
-          className="inline-block w-full bg-pink-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-pink-700 transition"
+          className="inline-block w-full bg-pink-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-pink-700 transition-all active:scale-95"
         >
           Return to Home
         </Link>
@@ -35,12 +85,12 @@ function SuccessContent() {
 
 export default function PaymentSuccess() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 p-4 transition-colors">
       <Suspense 
         fallback={
-          <div className="text-center p-8 bg-white rounded-2xl shadow-lg">
+          <div className="text-center p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border dark:border-gray-800">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading payment details...</p>
+            <p className="mt-4 text-gray-600 dark:text-gray-400">Loading payment details...</p>
           </div>
         }
       >
